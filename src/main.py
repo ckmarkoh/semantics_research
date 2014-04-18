@@ -5,6 +5,7 @@ from buildtree import run_parser
 from connect_ckip import sinica_parse
 from copy import deepcopy
 import nltk.sem.logic as logic
+import operator
 lgp = logic.LogicParser()
 
 
@@ -19,7 +20,6 @@ _INPUT_DICT = {
 def parse_and_build_tree(raw_data):
     parsed_data = sinica_parse(raw_data)
     parsed_data_0 = parsed_data[0]
-    #print parsed_data_0
     tree = run_parser(parsed_data_0)
     #tree.chomsky_normal_form()
     tree.pprint()
@@ -43,10 +43,6 @@ def split_role_pos(node_str):
         else:
             return None,str_split[0]
 
-def change_role_pos(node_dict, role, pos):
-    node_dict.update({'role':role})
-    node_dict.update({'pos':pos})
-
 def tree_is_pos(tree):
     if len( tree) == 1:
         if  isinstance( tree[0], unicode):
@@ -56,40 +52,38 @@ def tree_is_pos(tree):
 def tree_traverse(tree):
     role, pos = split_role_pos(tree.node)
     if tree_is_pos(tree):
-        node_dict={}
-        change_role_pos( node_dict, role,pos )
-        gen_leave_sem( node_dict, tree, pos)
-
+        return {'role':role, 'pos':pos, 'sem':gen_leave_sem(tree, pos)}
     elif len(tree) == 1:
         node_dict = tree_traverse(tree[0])
         if role:
-            change_role_pos(node_dict, role, pos)
+            node_dict.update({'role':role, 'pos':pos})
+        return node_dict
     else:
-        node_dict={}
-        change_role_pos(node_dict, tree, pos)
-        gen_node_sem(node_dict, tree)
+        return {'role':role, 'pos':pos, 'sem':gen_node_sem(tree)}
 
-    return node_dict
-
-def gen_leave_sem(node_dict,tree,pos):
+def gen_leave_sem(tree, pos):
     assert(tree_is_pos(tree))
+
     if "N" in pos:
-        node_dict.update({'sem' : "%s"%(tree[0])})
+        return "%s"%(tree[0])
+
     elif "V" in pos:
-        node_dict.update({'sem' : r"\x y.%s(x,y)"%(tree[0])})
+        return r"\x y.%s(x,y)"%(tree[0])
 
-def gen_node_sem(node_dict,tree):
-    assert  len(tree) > 1 
-    node_ary = map(lambda subtree :   tree_traverse(subtree)  , tree)
-    node_ary_dict = { node['role']:node for node in node_ary }
+
+def gen_node_sem(tree):
+    assert len(tree) > 1 
     
-    simplify_seq = ['','Head','agent','goal']   
+    nary_dict = dict( map(lambda node : ( node['role'],node )
+                          ,map(lambda subtree : tree_traverse(subtree)  , tree) ))
 
-    node_sem_str = reduce(lambda x, y: r'%s(%s)'%(x, node_ary_dict[y]['sem'])                    
-                          , filter(lambda z :  z in node_ary_dict.keys() or z == '' ,simplify_seq ))
+    node_sem_str = reduce(lambda x, y: r'%s(%s)'%(x, y) ,
+                         [''] + [ nary_dict.pop(s)['sem'] 
+                                for s in ['Head','agent','goal'] + nary_dict.keys() if s in nary_dict.keys() ] )
 
-    node_sem = lgp.parse(node_sem_str.encode('utf-8')).simplify().__str__().decode('utf-8')
-    node_dict.update({'sem':node_sem})
+    return lgp.parse(node_sem_str.encode('utf-8')).simplify().__str__().decode('utf-8')
+    
+
 
 if __name__ == "main":
     tree = main()
