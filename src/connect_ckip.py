@@ -2,6 +2,10 @@
 from splinter import Browser
 import re
 from sys import argv
+import time
+
+
+_SLEEP=1
 
 def sinica_parse(raw_str):
     with Browser() as browser:
@@ -10,8 +14,9 @@ def sinica_parse(raw_str):
         textarea.fill(raw_str.decode('utf-8'))
         parse_button=browser.find_by_xpath("//form[2]/table[1]/tbody[1]/tr[1]/td[1]/input[1]")
         parse_button.click()
+        time.sleep(_SLEEP)
         raw_result=browser.find_by_xpath("//table[@id='data_table']/tbody/tr/td/nobr")
-        print raw_result
+        #print raw_result
         array_result=[]
         for rsl in raw_result:
             str_result=re.match("#[^S]+(S[^#]+)#.*",rsl.text)

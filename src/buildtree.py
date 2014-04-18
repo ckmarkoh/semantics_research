@@ -6,7 +6,7 @@ from nltk import Tree
 # List of token names.   This is always required
 tokens = (
    'TAG',
-   'STS',
+#   'STS',
    'COLON',
    'PIPE',
    'HAN',
@@ -17,7 +17,7 @@ tokens = (
 
 # Regular expression rules for simple tokens
 t_TAG     = r'[A-Za-z][A-Za-z0-9_]*'
-t_STS     = r'[A-Z]'
+#t_STS     = r'[A-Z]'
 t_COLON   = r':'
 t_PIPE    = r'\|'
 t_HAN     = ur'[\u4e00-\u9fff]+'
@@ -38,6 +38,9 @@ t_ignore  = ' \t\n'
 ## Error handling rule
 def t_error(t):
     print "Illegal character '%s'" % t.value[0]
+    #print t.value
+    #t.value=t.value[1:]
+    #t.value[0]=t.value[0].replace()
     t.lexer.skip(1)
 
 #lexer.input(data)
@@ -77,9 +80,9 @@ def p_labl_sem(p):
     p[0]= "%s:%s"%(p[1],p[3])
     
 
-def p_stsval(p):
-    'sts : STS'
-    p[0]="sts:%s"%(p[1])
+#def p_stsval(p):
+#    'sts : STS'
+#    p[0]="sts:%s"%(p[1])
 
 def p_tagval(p):
     'tag : TAG'
@@ -109,7 +112,10 @@ parser = yacc.yacc()
 
 def run_parser(data):
     #data = u'S(hypothesis:Cbaa:如果|experiencer:NP(Head:Nhac:您)|Head:VK2:需要|goal:NP(quantifier:Neqa:大量|Head:Nad:剖析))'
+    data=data.replace(u'\u2027\u7684','_DE')
+    #print [data]
     result = parser.parse(data)
+    
 #    print result
     tree=Tree.parse(result)
 #    tree.chomsky_normal_form()

@@ -5,9 +5,9 @@ _tabversion = '3.2'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'Eu\xcf\xc9Z\xd86I\x90\x8cH\xdf{\xaf\xbb\x1a'
+_lr_signature = '\xc39\x93\xe4<\x14\xf4O\x7f\xf3\x05#M\xa7\xc7\x00'
     
-_lr_action_items = {'RPAREN':([7,10,11,12,16,17,18,20,],[11,-5,-4,-3,-12,-11,-2,-6,]),'HAN':([13,],[17,]),'PIPE':([10,11,12,16,17,18,],[15,-4,-3,-12,-11,-2,]),'TAG':([0,5,14,15,],[2,6,2,6,]),'COLON':([2,6,8,9,19,],[-9,-10,13,14,-7,]),'LPAREN':([2,3,8,19,],[-9,5,5,-7,]),'NUM':([13,],[16,]),'$end':([1,4,11,],[0,-1,-4,]),}
+_lr_action_items = {'RPAREN':([7,10,11,12,16,17,18,20,],[11,-5,-4,-3,-11,-10,-2,-6,]),'HAN':([13,],[17,]),'PIPE':([10,11,12,16,17,18,],[15,-4,-3,-11,-10,-2,]),'TAG':([0,5,14,15,],[2,6,2,6,]),'COLON':([2,6,8,9,19,],[-8,-9,13,14,-7,]),'LPAREN':([2,3,8,19,],[-8,5,5,-7,]),'NUM':([13,],[16,]),'$end':([1,4,11,],[0,-1,-4,]),}
 
 _lr_action = { }
 for _k, _v in _lr_action_items.items():
@@ -26,16 +26,15 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> start","S'",1,None,None,None),
-  ('start -> tag pars','start',2,'p_start','/home/markchang/semantics/src/buildtree.py',51),
-  ('st -> labl COLON han','st',3,'p_st_1','/home/markchang/semantics/src/buildtree.py',55),
-  ('st -> labl pars','st',2,'p_st_2','/home/markchang/semantics/src/buildtree.py',59),
-  ('pars -> LPAREN stGropu RPAREN','pars',3,'p_pars_stg','/home/markchang/semantics/src/buildtree.py',63),
-  ('stGropu -> st','stGropu',1,'p_stg_st','/home/markchang/semantics/src/buildtree.py',67),
-  ('stGropu -> st PIPE stGropu','stGropu',3,'p_stg_stg','/home/markchang/semantics/src/buildtree.py',71),
-  ('labl -> sem COLON tag','labl',3,'p_labl_sem','/home/markchang/semantics/src/buildtree.py',76),
-  ('sts -> STS','sts',1,'p_stsval','/home/markchang/semantics/src/buildtree.py',81),
-  ('tag -> TAG','tag',1,'p_tagval','/home/markchang/semantics/src/buildtree.py',85),
-  ('sem -> TAG','sem',1,'p_semval','/home/markchang/semantics/src/buildtree.py',90),
-  ('han -> HAN','han',1,'p_hanval','/home/markchang/semantics/src/buildtree.py',94),
-  ('han -> NUM','han',1,'p_nanval','/home/markchang/semantics/src/buildtree.py',98),
+  ('start -> tag pars','start',2,'p_start','/home/markchang/semantics/src/buildtree.py',54),
+  ('st -> labl COLON han','st',3,'p_st_1','/home/markchang/semantics/src/buildtree.py',58),
+  ('st -> labl pars','st',2,'p_st_2','/home/markchang/semantics/src/buildtree.py',62),
+  ('pars -> LPAREN stGropu RPAREN','pars',3,'p_pars_stg','/home/markchang/semantics/src/buildtree.py',66),
+  ('stGropu -> st','stGropu',1,'p_stg_st','/home/markchang/semantics/src/buildtree.py',70),
+  ('stGropu -> st PIPE stGropu','stGropu',3,'p_stg_stg','/home/markchang/semantics/src/buildtree.py',74),
+  ('labl -> sem COLON tag','labl',3,'p_labl_sem','/home/markchang/semantics/src/buildtree.py',79),
+  ('tag -> TAG','tag',1,'p_tagval','/home/markchang/semantics/src/buildtree.py',88),
+  ('sem -> TAG','sem',1,'p_semval','/home/markchang/semantics/src/buildtree.py',93),
+  ('han -> HAN','han',1,'p_hanval','/home/markchang/semantics/src/buildtree.py',97),
+  ('han -> NUM','han',1,'p_nanval','/home/markchang/semantics/src/buildtree.py',101),
 ]
