@@ -19,12 +19,7 @@ _INPUT_DICT = {
 6:u"S(agent:NP(Head:Nb:布魯圖)|location:PP(Head:P21:在|DUMMY:NP(Head:Nc:元老院))|instrument:PP(Head:P39:用|DUMMY:NP(Head:Nab:刀子))|Head:VC2:刺殺|goal:NP(Head:Nba:凱撒))",
 }
 
-_NUM_ID = 0
-
-def gen_id():
-    global _NUM_ID 
-    _NUM_ID += 1
-    return _NUM_ID
+_num_id = 0
 
 def parse_and_build_tree(raw_data):
     parsed_data = sinica_parse(raw_data)
@@ -93,7 +88,9 @@ def gen_node_sem_1(tree, role, pos):
     print node_dict['sem'] , pos
     if role and role != "DUMMY":
         if "P" == pos[0] or "N" == pos[0] :
-            node_sem_str = r'%s(%s)(%s)'%(node_dict['sem'], role, "n%s"%(gen_id()) )
+            _num_id + = 1
+            node_sem_str = r'%s(%s)(%s)'%(node_dict['sem'], role, "n%s"%(_num_id) )
+            print node_sem_str
             return lgp.parse(node_sem_str.encode('utf-8')).simplify().__str__().decode('utf-8')
     return node_dict['sem']
     
