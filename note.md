@@ -19,3 +19,6 @@ e4=lgp.parse("%s(%s)"%(e1.__str__(),e2.__str__()))
 e5=lgp.parse("%s(%s)"%(e3.__str__(),e4.__str__()))
 print e5.simplify()
 ```
+
+
+gen id sem can be earlier?
