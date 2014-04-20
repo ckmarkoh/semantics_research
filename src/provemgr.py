@@ -18,3 +18,4 @@ class ProveMgr(object):
             assert 0
         con = lgc.LogicParser().parse(to_utf8_str(con_str))
         return self.prover.prove(con,pre)
+   

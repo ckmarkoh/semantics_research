@@ -4,12 +4,9 @@ import nltk.sem.logic as lg
 import operator
 from MyPrinter import MyPrinter
 from buildtree import run_parser
-from util import *
 from sys import argv
+from util import *
 import re
-
-#Prover9().prove(c, [p1,p2])
-#lgp = lg.LogicParser()
 
 
 _TEST_DICT = {
@@ -22,7 +19,19 @@ _TEST_DICT = {
 }
 
 
-class SemParserV1(object):
+## DONE
+#2 : exists e (發表(e) & (theme(n3,e) & 演講(n3)) & (location(n2,e) & 中研院(n2)) & (agent(n0,e) & 馬英九(n0)) & (time(n1,e) & 今天(n1)))
+#3 : exists e (刺殺(e) & (goal(n1,e) & 凱撒(n1)) & (agent(n0,e) & 布魯圖(n0)))
+#6 : exists e (刺殺(e) & (instrument(n2,e) & 刀子(n2)) & (location(n1,e) & 元老院(n1)) & (agent(n0,e) & 布魯圖(n0)) & (goal(n3,e) & 凱撒(n3)))
+#7 : exists e (表達(e) & (theme(n2,e) & 立場(n2)) & 清楚(e,manner) & (agent(n0,e) & 江宜樺(n0)) & (time(n1,e) & 已(n1)))
+## NOT OK
+#0 : exists e (呼籲(e) & None(theme) & 懇切(e,manner) & None(agent))
+#1 : exists e (幫助(e) & None(goal) & (agent(n0,e) & 我(n0)))
+##
+
+
+
+class SemParserV0(object):
     def __init__(self):
         self._traverse = {}
         self._chvar_dict = {}
@@ -145,7 +154,7 @@ class SemParserV1(object):
 
 
 if __name__ == "__main__" or __name__ == "semparser":
-    sm = SemParserV1() 
+    sm = SemParserV0() 
     tree_str = _TEST_DICT[int(argv[1])]
     t1 = run_parser(tree_str)
     print sm.get_parsed_sem(t1)
