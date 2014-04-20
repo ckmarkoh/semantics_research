@@ -11,14 +11,17 @@ Done
 in Progress
 
 4.1. more complex logic form
+Done
 
 4.1.1 adj
+Done
+4.1.2 relative clause
+in Progress
 
-4.1.2 negation
+4.1.3 negation
 
-4.1.3 quantifier
+4.1.4 quantifier
 
-4.1.4 relative clause
 
 
 
