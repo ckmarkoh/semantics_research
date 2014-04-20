@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from sys import argv
-import semparser as sp
+import semmgr as sp
 from nltk import Prover9
 import nltk.sem.logic as lgc
 

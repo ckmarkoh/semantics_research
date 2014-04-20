@@ -4,8 +4,8 @@ from sys import argv
 from buildtree import run_parser
 from connect_ckip import sinica_parse
 from MyPrinter import MyPrinter
-import semparser as sp
-from nltk import Prover9
+import semmgr as sp
+import provemgr as pv
 import nltk.sem.logic as lgc
 
 #Prover9().prove(c, [p1,p2])
@@ -56,10 +56,10 @@ def test1():
     s2 = sm.tree_to_sem(tree_choice(3))
     print s1
     print s2
-    p1 = lgc.LogicParser().parse(sm.sem_no_chinese(s1).encode('utf-8'))
-    p2 = lgc.LogicParser().parse(sm.sem_no_chinese(s2).encode('utf-8'))
+    #p1 = lgc.LogicParser().parse(sm.sem_no_chinese(s1).encode('utf-8'))
+    #p2 = lgc.LogicParser().parse(sm.sem_no_chinese(s2).encode('utf-8'))
     print "s1 --> s2"
-    print Prover9().prove(p2, [p1])
+    print pv.ProveMgr().prove(sm.sem_no_chinese(s1), sm.sem_no_chinese(s2))
 
 
 
