@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from nltk import Tree
-from sys import argv
+#from sys import argv
 from buildtree import run_parser, treestr_to_tree
 from connect_ckip import sinica_parse, sinica_parse_0
 from MyPrinter import MyPrinter
@@ -21,6 +21,8 @@ _INPUT_DICT = {
 5:u"S(agent:NP(Head:Nb:布魯圖)|instrument:PP(Head:P39:用|DUMMY:NP(Head:Nab:刀子))|Head:VC2:刺殺|goal:NP(Head:Nba:凱撒)) ",
 6:u"S(agent:NP(Head:Nb:布魯圖)|location:PP(Head:P21:在|DUMMY:NP(Head:Nc:元老院))|instrument:PP(Head:P39:用|DUMMY:NP(Head:Nab:刀子))|Head:VC2:刺殺|goal:NP(Head:Nba:凱撒))",
 7:u"S(agent:NP(Head:Nb:江宜樺)|time:Dd:已|manner:VH11:清楚|Head:VC31:表達|theme:NP(Head:Nac:立場))", 
+8:u"S(agent:NP(Head:Nb:姚明)|theme:PP(Head:P21:在|DUMMY:GP(DUMMY:NP(quantifier:DM:２００２年|agent:Nb:ＮＢＡ|Head:Nv:選秀)|Head:Ng:中))|agent:PP(Head:P02:被|DUMMY:NP(property:Nc:休斯敦|Head:Nba:火箭隊))|Head:VG1:選為|range:NP(property:Nab:狀元|Head:Nab:新秀))",
+9:u"S(agent:NP(Head:Nb:姚明)|theme:PP(Head:P21:在|DUMMY:GP(DUMMY:NP(quantifier:DM:２００２年|agent:Nb:ＮＢＡ|Head:Nv:選秀)|Head:Ng:中))|agent:PP(Head:P02:被)|Head:VG1:選為|range:NP(property:Nab:狀元|Head:Nab:新秀))"
 }
 
 
@@ -67,53 +69,39 @@ def test1():
 
 
 if __name__ == "__main__"  :
+    sm = sp.SemMgr()
     parser = argparse.ArgumentParser(prog='main')
     parser.add_argument('itype', metavar='itype', choices=['raw','id','treestr']
-                        , type=str, help='input type: "raw","id","treestr" ')
+                        , type=str, help='input type: %(choices)s ')
     parser.add_argument('otype', metavar='otype', choices=['tree', 'sem']
-                        , type=str, help='output type: "tree","sem"')
+                        , type=str, help='output type: %(choices)s ')
     parser.add_argument('intstr', metavar='intstr', type=str, help='input string')
 #    parser.add_argument('--id', metavar='id', type=id, help='test file path')
+    
     args = parser.parse_args()
+
     #print args
     
     input_str = args.intstr
 
     t1 = None
     if args.itype == 'raw':
-        t1 =  treestr_to_tree(sinica_parse_0(input_str))
+        tree_str = sinica_parse_0(input_str)
+        print tree_str
+        t1 =  treestr_to_tree(tree_str)
 
     elif args.itype == 'treestr':
         t1 =  treestr_to_tree(input_str)
 
     elif args.itype == 'id':
-        t1 =  treestr_to_tree(tree_choice(int(input_str)))
+        t1 =  treestr_to_tree(_INPUT_DICT[int(input_str)])
    
     if args.otype == 'tree':
         t1.draw()
-        print t1
         
     elif args.otype == 'sem':
         s1 = sm.tree_to_sem(t1)       
         print s1
-
-#    parser = argparse.ArgumentParser(prog='main')
-##parser.add_argument('--itype', nargs='1')
-##parser.add_argument('--otype', nargs='1')
-#    #parser.add_argument('--itype', nargs='1',  help='input_type of the %(prog)s program')
-#    #parser.add_argument('--otype', nargs='1',  help='output_type of the %(prog)s program')
-#    #parser.add_argument('--foo', nargs=1)
-#    parser.add_argument('move', choices=['rock', 'paper', 'scissors'])
-#    #parser.add_argument('bar2', help='bar2 of the %(prog)s program')
-#    args = parser.parse_args()
-#    print args
-
-
-#    parser = argparse.ArgumentParser(prog='main')
-#    parser.add_argument('--str',  help='input_type of the %(prog)s program')
-#    parser.add_argument('--itype', choices=['treestr', 'raw','id'] , help='input_type of the %(prog)s program')
-#    parser.add_argument('--otype', choices=['tree', 'sem', 'prove'] , help='output_type of the %(prog)s program')
-#    args = parser.parse_args()
 
     #s1 = args
     #print s1

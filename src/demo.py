@@ -30,8 +30,8 @@ def demo1():
 def demo2():
     sm = sp.SemMgr()
     print "s1 --> s2  ??"
-    t1 = _DEMO_DICT[1]
-    t2 = _DEMO_DICT[2] 
+    t1 = _DEMO_DICT[3]
+    t2 = _DEMO_DICT[4] 
     s1 = sm.str_tree_to_sem(t1)
     s2 = sm.str_tree_to_sem(t2)
     print ""

@@ -152,18 +152,18 @@ class SemParserV1(object):
     def gen_node_sem_2(self, tree, role='', pos=''):
         assert len(tree) > 1 
         
-        nary_dict = dict( map(lambda node : ( node['role'],node )
-                              ,map(lambda subtree : self.tree_traverse(subtree)  , tree) ))
+        nary_dict =  map(lambda node : ( node['role'],node )
+                              ,map(lambda subtree : self.tree_traverse(subtree)  , tree) )
 
         #n_head = nary_dict.pop('Head')
         #MyPrinter(nary_dict).print_data()
         
             
         map(lambda n_elem : n_elem.update({ 'sem':self.change_node_sem_1(n_elem['sem'],n_elem['role'],n_elem['pos'])}) 
-                             ,nary_dict.values()    )
+                             ,map(itemgetter(1),nary_dict)    )
 
         #node_sem_ary = filter(lambda x : len(x) > 0, [n_head['sem']] + map(itemgetter('sem'),nary_dict.values()))
-        node_sem_ary = filter(lambda x : len(x) > 0,  map(itemgetter('sem'),nary_dict.values()))
+        node_sem_ary = filter(lambda x : len(x) > 0,  map(itemgetter('sem'),map(itemgetter(1),nary_dict)))
 
         template_str = apply(lambda alpha_bet :
                         r"\ %s r.((%s))"%(" ".join(alpha_bet) , r" & ".join(map(lambda i : "%s(r)"%(i) ,  alpha_bet )))
@@ -184,8 +184,6 @@ class SemParserV1(object):
 
        #     return " & ".join(map (lambda s :  nary_dict[s]['sem']  , nary_dict.keys()))
 
-if __name__ == "semparser":
-    argv.append(0)
 
 if __name__ == "__main__" : # or __name__ == "semparser":
     sm = SemParserV1() 

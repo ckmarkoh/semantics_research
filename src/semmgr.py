@@ -45,7 +45,7 @@ class SemMgr(object):
         return reduce(lambda x,y : x.replace(y,self._chvar_dict[y]) , ch_word_list , sem_str)
 
 
-if __name__ == "__main__" or __name__ == "semmgr":
+if __name__ == "__main__" :#or __name__ == "semmgr":
     sm = SemMgr()
     tree_str = _TEST_DICT[1]
     t1 = run_parser(tree_str)

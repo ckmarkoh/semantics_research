@@ -4,6 +4,7 @@ import re
 from sys import argv
 import time
 import requests
+from util import *
 
 
 _SLEEP=1
@@ -34,7 +35,7 @@ def sinica_parse(raw_str,run_type="browser"):
         with Browser('chrome') as browser:
             browser.visit("http://parser.iis.sinica.edu.tw/")
             textarea=browser.find_by_xpath("//form[2]/table[1]/tbody[1]/tr[1]/td[1]/textarea[1]")
-            textarea.fill(raw_str.decode('utf-8'))
+            textarea.fill(to_unicode(raw_str))
             parse_button=browser.find_by_xpath("//form[2]/table[1]/tbody[1]/tr[1]/td[1]/input[1]")
             parse_button.click()
             time.sleep(_SLEEP)
