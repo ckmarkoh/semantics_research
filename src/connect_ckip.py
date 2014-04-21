@@ -50,6 +50,10 @@ def sinica_parse(raw_str,run_type="browser"):
         pass
         
 
+def sinica_parse_0(raw_str,run_type="browser"):
+    return  sinica_parse(raw_str,run_type)[0]
+
+
 
 def main():
     target_str=argv[1]

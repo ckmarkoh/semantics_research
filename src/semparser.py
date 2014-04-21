@@ -36,7 +36,8 @@ class SemParserV1(object):
 
     def get_parsed_sem(self,tree):
         self._traverse.clear()
-        sem_str =  r"\P.( exists x.((P)(x)) )((%s))"%(self.tree_traverse(tree)['sem'])
+        sem_str =  r"\P.( exists e.((P)(e)) )((%s))"%(self.tree_traverse(tree)['sem'])
+        #sem_str =  r"\P.( ((P)(e)) )((%s))"%(self.tree_traverse(tree)['sem'])
         return self.logic_parse(sem_str)
 
     def logic_parse(self, sem_str):
@@ -186,7 +187,7 @@ class SemParserV1(object):
 if __name__ == "semparser":
     argv.append(0)
 
-if __name__ == "__main__" or __name__ == "semparser":
+if __name__ == "__main__" : # or __name__ == "semparser":
     sm = SemParserV1() 
     tree_str = _TEST_DICT[int(argv[1])]
     t1 = run_parser(tree_str)

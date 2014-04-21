@@ -123,6 +123,8 @@ def run_parser(data):
 #    tree.draw()
     return tree
 
+def treestr_to_tree(data):
+    return run_parser(data)
 #print [argv[1]]
 #input_data=u'S(hypothesis:Cbaa:如果|experiencer:NP(Head:Nhac:您)|Head:VK2:需要|goal:NP(quantifier:Neqa:大量|Head:Nad:剖析))'
 #run(input_data)
