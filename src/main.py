@@ -73,39 +73,49 @@ if __name__ == "__main__"  :
     parser = argparse.ArgumentParser(prog='main')
     parser.add_argument('itype', metavar='itype', choices=['raw','id','treestr']
                         , type=str, help='input type: %(choices)s ')
-    parser.add_argument('otype', metavar='otype', choices=['tree', 'sem']
+    parser.add_argument('otype', metavar='otype', choices=['tree', 'sem','prove']
                         , type=str, help='output type: %(choices)s ')
-    parser.add_argument('intstr', metavar='intstr', type=str, help='input string')
+    parser.add_argument('inpstr', metavar='str', nargs='*', type=str, help='input string 1')
 #    parser.add_argument('--id', metavar='id', type=id, help='test file path')
     
     args = parser.parse_args()
 
     #print args
-    
-    input_str = args.intstr
+     #a=  lambda(x,f: reduce( apply(f,[x]) 
+     
+    input_str = args.inpstr
 
+    print input_str
     t1 = None
     if args.itype == 'raw':
-        tree_str = sinica_parse_0(input_str)
-        print tree_str
-        t1 =  treestr_to_tree(tree_str)
+        flist = [sinica_parse_print_0,treestr_to_tree ]
+        #tree_str = sinica_parse_0(input_str)
+        #t1 =  treestr_to_tree(tree_str)
 
     elif args.itype == 'treestr':
-        t1 =  treestr_to_tree(input_str)
+        flist = [treestr_to_tree ]
+        #t1 =  treestr_to_tree(input_str)
 
     elif args.itype == 'id':
-        t1 =  treestr_to_tree(_INPUT_DICT[int(input_str)])
-   
-    if args.otype == 'tree':
-        t1.draw()
+        flist = [lambda x : _INPUT_DICT[int(x)],treestr_to_tree ]
         
+    t_list = map(lambda y : reduce(lambda x,f: f(x), flist , y) , input_str)
+     
+    if args.otype == 'tree':
+        for t in t_list:
+            t.draw()
+
     elif args.otype == 'sem':
-        s1 = sm.tree_to_sem(t1)       
-        print s1
+        s_list = map(lambda t :  sm.tree_to_sem(t) ,t_list)
+        for s in s_list:
+            print t 
+
+    elif args.otype == 'prove':
+        s_list = map(lambda t :  sm.tree_to_sem(t) ,t_list)
+        print pv.ProveMgr().prove( map( lambda s : sm.sem_no_chinese(s) , s_list[0:-1]) , sm.sem_no_chinese(s_list[-1]))
 
     #s1 = args
     #print s1
-
 
     #demo1() 
 #    test1()

@@ -39,7 +39,7 @@ class SemMgr(object):
         return self._str_tree_dict[tree.__str__()]
 
     def sem_no_chinese(self,sem_str):
-        ch_word_list = re.findall(ur'[\u4e00-\u9fff]+',sem_str)
+        ch_word_list = re.findall(ur'[\u4e00-\u9fff\uff01-\uff5e]+',sem_str)
         map(lambda  ch_word :  self._chvar_dict.update({ch_word : self.gen_ch_id(ch_word)}) 
                                 if ch_word not in self._chvar_dict.keys() else None , ch_word_list )
         return reduce(lambda x,y : x.replace(y,self._chvar_dict[y]) , ch_word_list , sem_str)

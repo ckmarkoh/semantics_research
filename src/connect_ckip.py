@@ -55,6 +55,10 @@ def sinica_parse_0(raw_str,run_type="browser"):
     return  sinica_parse(raw_str,run_type)[0]
 
 
+def sinica_parse_print_0(raw_str,run_type="browser"):
+    tree_str = sinica_parse_0(raw_str,run_type)
+    print to_utf8_str(tree_str )
+    return tree_str 
 
 def main():
     target_str=argv[1]

@@ -36,7 +36,7 @@ class SemParserV1(object):
 
     def get_parsed_sem(self,tree):
         self._traverse.clear()
-        sem_str =  r"\P.( exists e.((P)(e)) )((%s))"%(self.tree_traverse(tree)['sem'])
+        sem_str =  r"\P.( ((P)(e)) )((%s))"%(self.tree_traverse(tree)['sem'])
         #sem_str =  r"\P.( ((P)(e)) )((%s))"%(self.tree_traverse(tree)['sem'])
         return self.logic_parse(sem_str)
 
