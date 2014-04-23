@@ -155,34 +155,20 @@ class SemParserV1(object):
         nary_dict =  map(lambda node : ( node['role'],node )
                               ,map(lambda subtree : self.tree_traverse(subtree)  , tree) )
 
-        #n_head = nary_dict.pop('Head')
-        #MyPrinter(nary_dict).print_data()
         
             
         map(lambda n_elem : n_elem.update({ 'sem':self.change_node_sem_1(n_elem['sem'],n_elem['role'],n_elem['pos'])}) 
                              ,map(itemgetter(1),nary_dict)    )
 
-        #node_sem_ary = filter(lambda x : len(x) > 0, [n_head['sem']] + map(itemgetter('sem'),nary_dict.values()))
-        node_sem_ary = filter(lambda x : len(x) > 0,  map(itemgetter('sem'),map(itemgetter(1),nary_dict)))
+        node_sem_ary = filter(lambda x : len(x) > 0,  map(itemgetter('sem'), map(itemgetter(1),nary_dict)))
 
         template_str = apply(lambda alpha_bet :
                         r"\ %s r.((%s))"%(" ".join(alpha_bet) , r" & ".join(map(lambda i : "%s(r)"%(i) ,  alpha_bet )))
                         , [map(lambda i : (chr(i+ord('A'))) , range(len(node_sem_ary)))] )
         
         sem_str = reduce(lambda a,b : "%s(%s)"%(a,b) , node_sem_ary , template_str )
-        #print sem_str 
+
         return self.logic_parse(sem_str)
-        #return lg.LogicParser().parse(sem_str.encode('utf-8')).simplify().__str__().decode('utf-8')
-        #r"\P.( exists x.((P)(x)) )(())
-         
-       # if n_head['pos'][0] in ["V"] :
-         
-        
-        #return "exists e (%s)"%(" & ".join([ n_head['sem'] ] + map (lambda s :  nary_dict[s]['sem']  , nary_dict.keys()) ))
-
-       # elif n_head['pos'][0] in ["P"] :
-
-       #     return " & ".join(map (lambda s :  nary_dict[s]['sem']  , nary_dict.keys()))
 
 
 if __name__ == "__main__" : # or __name__ == "semparser":

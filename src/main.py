@@ -59,12 +59,12 @@ def test1():
     s2 = sm.tree_to_sem(tree_choice(3))
     print s1
     print s2
-    #p1 = lgc.LogicParser().parse(sm.sem_no_chinese(s1).encode('utf-8'))
-    #p2 = lgc.LogicParser().parse(sm.sem_no_chinese(s2).encode('utf-8'))
+    #p1 = lgc.LogicParser().parse(sm.sem_remove_chinese(s1).encode('utf-8'))
+    #p2 = lgc.LogicParser().parse(sm.sem_remove_chinese(s2).encode('utf-8'))
     print "s1 --> s2"
-    print pv.ProveMgr().prove(sm.sem_no_chinese(s1), sm.sem_no_chinese(s2))
+    print pv.ProveMgr().prove(sm.sem_remove_chinese(s1), sm.sem_remove_chinese(s2))
     print "s2 --> s1"
-    print pv.ProveMgr().prove(sm.sem_no_chinese(s2), sm.sem_no_chinese(s1))
+    print pv.ProveMgr().prove(sm.sem_remove_chinese(s2), sm.sem_remove_chinese(s1))
 
 
 
@@ -112,11 +112,10 @@ if __name__ == "__main__"  :
 
     elif args.otype == 'prove':
         s_list = map(lambda t :  sm.tree_to_sem(t) ,t_list)
-        print pv.ProveMgr().prove( map( lambda s : sm.sem_no_chinese(s) , s_list[0:-1]) , sm.sem_no_chinese(s_list[-1]))
+        print pv.ProveMgr().prove( map( lambda s : sm.sem_remove_chinese(s) , s_list[0:-1]) , sm.sem_remove_chinese(s_list[-1]))
 
     #s1 = args
     #print s1
-
     #demo1() 
 #    test1()
 #    t1 = tree_choice(3)
@@ -124,11 +123,11 @@ if __name__ == "__main__"  :
 #    s1 = sm.tree_to_sem(t1)
 #    s2 = sm.tree_to_sem(t2)
 #    print s1
-#    #print sm.sem_no_chinese(s1)
+#    #print sm.sem_remove_chinese(s1)
 #    print s2
-#    #print sm.sem_no_chinese(s2)
-#    p1 = lgc.LogicParser().parse(sm.sem_no_chinese(s1).encode('utf-8'))
-#    p2 = lgc.LogicParser().parse(sm.sem_no_chinese(s2).encode('utf-8'))
+#    #print sm.sem_remove_chinese(s2)
+#    p1 = lgc.LogicParser().parse(sm.sem_remove_chinese(s1).encode('utf-8'))
+#    p2 = lgc.LogicParser().parse(sm.sem_remove_chinese(s2).encode('utf-8'))
 #    #print p1.__str__()
 #    #print p2.__str__()
 #    print Prover9().prove(p1, [p2])
