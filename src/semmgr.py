@@ -82,13 +82,9 @@ class SemMgr(object):
 
     def prover_catch_unsolved(self,pre_str_raw,con_str_raw):
         pre_str, con_str = self.sem_remove_chinese(pre_str_raw),self.sem_remove_chinese(con_str_raw)
-        result, output = apply(  capture_output(self._pm.prove), [ [pre_str], con_str, True] )
-
-        unsolved = apply(lambda opt_line : 
-                            opr.itemgetter(filter(lambda i: opt_line[i] == 'AGENDA EMPTY' 
-                                                ,range(1,len(opt_line)))[0]-1)(opt_line)
-                                                    , [ map(lambda s : s.strip() ,  output.split('\n'))] )
+        self._pm.prove_catch_unsolved(pre_str,con_str)
         
+
 
         
 
