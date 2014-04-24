@@ -52,7 +52,38 @@ class ProveMgr(object):
         unsolved_lgf = lgc.LogicParser().parse(unsolved)
         print con_split
         print unsolved_lgf
+        print pre0_split
+        con_label = self.logic_same_variable(
+                             self.logic_same_variable(con_split, unsolved_lgf, 'variables')
+                                      ,unsolved_lgf,'predicates',True)[0]
+        print con_label 
+        pre0_label = self.logic_same_variable(pre0_split, con_label, 'predicates')[0]
+        print pre0_label
+        pre0_var0, pre0_var1 = self.logic_drop_var(pre0_label)
+        pre0_result = self.logic_same_variable(
+                                self.logic_same_variable(pre0_split, pre0_var0, 'variables')
+                                        ,pre0_var1,'variables',True)[0]
+        print pre0_result
+        con_unsolved = unsolved_lgf.negate()
+        final_result =  lgc.LogicParser().parse(
+                            "%s -> %s"%(pre0_result & pre0_label ,con_unsolved & con_label ))
+        print final_result
+        return final_result
+
+
         
+
+    def logic_same_variable(self, lgf_ary, lgf, ftype, inv=False):
+        assert ftype == 'variables' or ftype == 'predicates'
+        if not inv:
+            return filter(lambda f : opr.attrgetter(ftype)(lgf)() \
+                                     .issubset(opr.attrgetter(ftype)(f)()) ,lgf_ary)
+        else:
+            return filter(lambda f : not opr.attrgetter(ftype)(lgf)() \
+                                     .issubset(opr.attrgetter(ftype)(f)()) ,lgf_ary)
+
+            
+
     
     def logic_split_and(self, lgf): 
         if isinstance(lgf, lgc.AndExpression):
@@ -61,5 +92,14 @@ class ProveMgr(object):
         else:
             return [lgf]
 
-        
-
+    def logic_drop_var(self, lgf): 
+        if isinstance(lgf, lgc.ApplicationExpression):
+            lgf_0 , lgf_1  = lgf.visit(lambda x:x, lambda x:x)
+            return lgf_0,lgf_1
+        else:
+            assert 0 
+        #if isinstance(lgf, lgc.AndExpression):
+        #    lgf_0 , lgf_1 = lgf.visit(lambda x:x, lambda x:x)
+        #    return [lgf_1] + self.logic_split_and(lgf_0)
+        #else:
+        #    return [lgf]

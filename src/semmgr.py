@@ -82,7 +82,7 @@ class SemMgr(object):
 
     def prover_catch_unsolved(self,pre_str_raw,con_str_raw):
         pre_str, con_str = self.sem_remove_chinese(pre_str_raw),self.sem_remove_chinese(con_str_raw)
-        self._pm.prove_catch_unsolved(pre_str,con_str)
+        return self._pm.prove_catch_unsolved(pre_str,con_str)
         
 
 
