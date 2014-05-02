@@ -45,4 +45,4 @@ def demo2():
     print Prover9().prove(p1, [p2])
 
 if __name__ == "__main__":
-    demo2() 
+    demo1() 

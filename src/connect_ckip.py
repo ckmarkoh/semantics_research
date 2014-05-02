@@ -50,7 +50,6 @@ def sinica_parse(raw_str,run_type="browser"):
     else:
         pass
         
-
 def sinica_parse_0(raw_str,run_type="browser"):
     return  sinica_parse(raw_str,run_type)[0]
 
