@@ -22,7 +22,7 @@ class MyPrinter(object):
     def classifier(self,d,l):
         if type(d) is dict:
             return self.print_dict(d,l)
-        elif type(d) is list:
+        elif type(d) in [list,tuple,set]:
             return self.print_list(d,l)
         elif type(d) is unicode:
             return self.print_unicode(d)

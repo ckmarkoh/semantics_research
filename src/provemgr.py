@@ -10,14 +10,14 @@ import operator as opr
 class ProveMgr(object):
 
     def __init__(self): 
-        self.prover = Prover9()
-        self.tabu_prover = TableauProver()
+        self._prover = Prover9()
+        self._tabu_prover = TableauProver()
 
     
 
     def prove(self, pre_str, con_str):
         pre, con = self.parse_logic(pre_str,con_str)
-        return self.prover.prove(con,pre)
+        return self._prover.prove(con,pre)
 
     def parse_logic(self, pre_str, con_str):
         if isinstance( pre_str, str) or isinstance( pre_str, unicode):
@@ -34,7 +34,7 @@ class ProveMgr(object):
     
     def prove_tabu(self,pre_str,con_str):
         pre, con = self.parse_logic(pre_str,con_str)
-        return (self.tabu_prover.prove(con,pre,verbose=True),pre,con)
+        return (self._tabu_prover.prove(con,pre,verbose=True),pre,con)
    
 
     def prove_catch_unsolved(self,pre_str,con_str):
@@ -50,25 +50,29 @@ class ProveMgr(object):
         con_split = self.logic_split_and(con)
         pre0_split = self.logic_split_and(pre0)
         unsolved_lgf = lgc.LogicParser().parse(unsolved)
-        print con_split
-        print unsolved_lgf
-        print pre0_split
+        #print con_split
+        #print unsolved_lgf
+        #print pre0_split
         con_label = self.logic_same_variable(
                              self.logic_same_variable(con_split, unsolved_lgf, 'variables')
                                       ,unsolved_lgf,'predicates',True)[0]
-        print con_label 
+        #print con_label 
         pre0_label = self.logic_same_variable(pre0_split, con_label, 'predicates')[0]
-        print pre0_label
+        #print pre0_label
         pre0_var0, pre0_var1 = self.logic_drop_var(pre0_label)
         pre0_result = self.logic_same_variable(
                                 self.logic_same_variable(pre0_split, pre0_var0, 'variables')
                                         ,pre0_var1,'variables',True)[0]
-        print pre0_result
+        #print pre0_result
         con_unsolved = unsolved_lgf.negate()
-        final_result =  lgc.LogicParser().parse(
+        missing_rule =  lgc.LogicParser().parse(
                             "%s -> %s"%(pre0_result & pre0_label ,con_unsolved & con_label ))
-        print final_result
-        return final_result
+        
+        print pre
+        print missing_rule
+        #print self._prover.prove(pre+[missing_rule],con)
+        #print final_result
+        #return missing_rule 
 
 
         
@@ -87,14 +91,15 @@ class ProveMgr(object):
     
     def logic_split_and(self, lgf): 
         if isinstance(lgf, lgc.AndExpression):
-            lgf_0 , lgf_1 = lgf.visit(lambda x:x, lambda x:x)
+            lgf_0 , lgf_1 = lgf.first, lgf.second#lgf.visit(lambda x:x, lambda x:x)
             return [lgf_1] + self.logic_split_and(lgf_0)
         else:
             return [lgf]
 
     def logic_drop_var(self, lgf): 
         if isinstance(lgf, lgc.ApplicationExpression):
-            lgf_0 , lgf_1  = lgf.visit(lambda x:x, lambda x:x)
+            lgf_0 , lgf_1 = lgf.visit(lambda x:x, lambda x:x)
+            #lgf_0 , lgf_1  = lgf.visit(lambda x:x, lambda x:x)
             return lgf_0,lgf_1
         else:
             assert 0 
