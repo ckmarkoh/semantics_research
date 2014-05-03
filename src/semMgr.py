@@ -4,8 +4,8 @@ import operator as opr
 import sys, StringIO
 from buildtree import run_parser
 from connect_ckip import sinica_parse
-from semparser import SemParserV1
-from provemgr import ProveMgr
+from semParser import SemParserV1
+from proveMgr import ProveMgr
 from util import *
 import re
 
@@ -76,9 +76,9 @@ class SemMgr(object):
         return self._pm.prove(self.sem_remove_chinese(pre_str)
                                     ,self.sem_remove_chinese(con_str))
 
-    #def prover_prove_tabu(self, pre_str, con_str):
-    #    return self._pm.prove(self.sem_remove_chinese(pre_str)
-    #                                ,self.sem_remove_chinese(con_str),tabu=True)
+    def prover_prove_tabu(self, pre_str, con_str):
+        return self._pm.prove(self.sem_remove_chinese(pre_str)
+                                    ,self.sem_remove_chinese(con_str),tabu=True)
 
     def prover_catch_unsolved(self,pre_str_raw,con_str_raw):
         pre_str, con_str = self.sem_remove_chinese(pre_str_raw),self.sem_remove_chinese(con_str_raw)

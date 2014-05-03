@@ -171,8 +171,8 @@ class SemParserV1(object):
         return self.logic_parse(sem_str)
 
 
-if __name__ == "__main__" : # or __name__ == "semparser":
-    sm = SemParserV1() 
+if __name__ == "__main__" : # or __name__ == "semParser":
+    sp = SemParserV1() 
     tree_str = _TEST_DICT[int(argv[1])]
     t1 = run_parser(tree_str)
-    print sm.get_parsed_sem(t1).encode('utf-8')
+    print sp.get_parsed_sem(t1).encode('utf-8')

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from sys import argv
-import semmgr as sp
-import provemgr as pv
+import semMgr as smg
+import proveMgr as pv
 import nltk.sem.logic as lgc
 from operator import itemgetter
 import sys, StringIO
@@ -23,7 +23,7 @@ _TEST_DICT = {
 
 
 def test(k1,k2):
-    sm = sp.SemMgr()
+    sm = smg.SemMgr()
     print "s1 --> s2  ??"
     t1 = _TEST_DICT[k1]
     t2 = _TEST_DICT[k2] 
@@ -48,7 +48,7 @@ def test(k1,k2):
 
 def test_single(k1,k2):
 
-    sm = sp.SemMgr()
+    sm = smg.SemMgr()
     t1 = _TEST_DICT[k1]
     t2 = _TEST_DICT[k2] 
     s1 = sm.str_tree_to_sem(t1)
@@ -84,4 +84,4 @@ def main():
 
 if __name__ == "__main__":
     main() 
-    print test_single(9, 10)
+    #print test_single(9, 10)

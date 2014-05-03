@@ -4,8 +4,8 @@ from nltk import Tree
 from buildtree import run_parser, treestr_to_tree
 from connect_ckip import sinica_parse, sinica_parse_0
 from MyPrinter import MyPrinter
-import semmgr as sp
-import provemgr as pv
+import semMgr as smg
+import proveMgr as pv
 import nltk.sem.logic as lgc
 from optparse import OptionParser
 import argparse
@@ -45,8 +45,8 @@ def main():
 
 
 #if __name__ == "main":
-#    reload(sp)
-#    sm = sp.SemMgr()
+#    reload(smg)
+#    sm = smg.SemMgr()
 #    tree = tree_choice(7)
 #    s1 = sm.tree_to_sem(tree)
 #    print s1
@@ -54,7 +54,7 @@ def main():
     #result = tree_traverse(tree)
     
 def test1():
-    sm = sp.SemMgr()
+    sm = smg.SemMgr()
     s1 = sm.tree_to_sem(tree_choice(4))
     s2 = sm.tree_to_sem(tree_choice(3))
     print s1
@@ -69,7 +69,7 @@ def test1():
 
 
 if __name__ == "__main__"  :
-    sm = sp.SemMgr()
+    sm = smg.SemMgr()
     parser = argparse.ArgumentParser(prog='main')
     parser.add_argument('itype', metavar='itype', choices=['raw','id','treestr']
                         , type=str, help='input type: %(choices)s ')
@@ -131,5 +131,5 @@ if __name__ == "__main__"  :
 #    #print p1.__str__()
 #    #print p2.__str__()
 #    print Prover9().prove(p1, [p2])
-#    #  sp.SemParserV1(tree).get_sem()
+#    #  smg.SemParserV1(tree).get_sem()
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from sys import argv
-import semmgr as sp
+import semMgr as smg
 from nltk import Prover9
 import nltk.sem.logic as lgc
 
@@ -12,7 +12,7 @@ _DEMO_DICT ={
 }
 
 def demo1():
-    sm = sp.SemMgr()
+    sm = smg.SemMgr()
     print "s1 --> s2  ??"
     raw_str_1 = raw_input("sentence s1:")
     raw_str_2 = raw_input("sentence s2:")
@@ -28,7 +28,7 @@ def demo1():
 
 
 def demo2():
-    sm = sp.SemMgr()
+    sm = smg.SemMgr()
     print "s1 --> s2  ??"
     t1 = _DEMO_DICT[3]
     t2 = _DEMO_DICT[4] 

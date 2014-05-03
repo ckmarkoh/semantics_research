@@ -155,7 +155,7 @@ class SemParserV0(object):
 
 
 
-if __name__ == "__main__" or __name__ == "semparser":
+if __name__ == "__main__" #or __name__ == "semParser":
     sm = SemParserV0() 
     tree_str = _TEST_DICT[int(argv[1])]
     t1 = run_parser(tree_str)
