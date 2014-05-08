@@ -5,6 +5,9 @@ from nltk import Prover9
 from util import *
 import nltk.sem.logic as lgc
 import operator as opr
+import logging
+#logging.basicConfig(level=logging.DEBUG)
+
 
 
 class ProveMgr(object):
@@ -44,7 +47,7 @@ class ProveMgr(object):
                                                 ,range(1,len(opt_line)))[0]-1)(opt_line)
                                                     , [ map(lambda s : s.strip() ,  output.split('\n'))] )
         pre0 = pre[0]
-        print unsolved
+        #print unsolved
         #print result
         #pre0 = lgc.LogicParser().parse('( agent(n0,e) & A0X99AC_0X82F1_0X4E5D(n0) & A0X4E2D_0X7814_0X9662(d1) & location(d1,e) & A0X767C_0X8868(e) & A0X6F14_0X8B1B(n2))')
         con_split = self.logic_split_and(con)
@@ -60,19 +63,18 @@ class ProveMgr(object):
         pre0_label = self.logic_same_variable(pre0_split, con_label, 'predicates')[0]
         #print pre0_label
         pre0_var0, pre0_var1 = self.logic_drop_var(pre0_label)
-        pre0_result = self.logic_same_variable(
+        pre0_unsolved = self.logic_same_variable(
                                 self.logic_same_variable(pre0_split, pre0_var0, 'variables')
                                         ,pre0_var1,'variables',True)[0]
-        #print pre0_result
+        #print pre0_unsolved
         con_unsolved = unsolved_lgf.negate()
         missing_rule =  lgc.LogicParser().parse(
-                            "%s -> %s"%(pre0_result & pre0_label ,con_unsolved & con_label ))
+                            "%s -> %s"%(pre0_unsolved & pre0_label ,con_unsolved & con_label ))
         
-        print pre
-        print missing_rule
-        #print self._prover.prove(pre+[missing_rule],con)
-        #print final_result
-        #return missing_rule 
+        # pre
+        return (con_unsolved.predicates().pop().__str__()  
+              , pre0_unsolved.predicates().pop().__str__()
+              , missing_rule.__str__())
 
 
         

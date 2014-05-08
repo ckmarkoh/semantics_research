@@ -25,6 +25,7 @@ class  SQLiteInterface(object):
                              ,column = column_str
                              ,where = where_str
                              ,other = other_str)
+        #print select_str
         self._cursor.execute(select_str)    
         raw_result = self._cursor.fetchall()
 

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from nltk import Tree
 #from sys import argv
-from buildtree import run_parser, treestr_to_tree
-from connect_ckip import sinica_parse, sinica_parse_0
+#from buildtree import run_parser, treestr_to_tree
+#from connect_ckip import sinica_parse, sinica_parse_0
 from MyPrinter import MyPrinter
 import semMgr as smg
+import ckipParser as ckp
 import proveMgr as pv
 import nltk.sem.logic as lgc
 from optparse import OptionParser
@@ -27,20 +28,8 @@ _INPUT_DICT = {
 
 
 
-def parse_and_build_tree(raw_data):
-    tree = run_parser(sinica_parse(raw_data)[0])
-    #tree.chomsky_normal_form()
-    tree.pprint()
-    tree.draw()
 
-def tree_choice(idx):
-    input_str = _INPUT_DICT[idx]
-    return run_parser(input_str)
 
-def main():
-    input_str = _INPUT_DICT[2]
-    tree = run_parser(input_str)
-    return tree
     #tree.draw()
 
 
@@ -55,8 +44,6 @@ def main():
     
 def test1():
     sm = smg.SemMgr()
-    s1 = sm.tree_to_sem(tree_choice(4))
-    s2 = sm.tree_to_sem(tree_choice(3))
     print s1
     print s2
     #p1 = lgc.LogicParser().parse(sm.sem_remove_chinese(s1).encode('utf-8'))
@@ -68,8 +55,9 @@ def test1():
 
 
 
-if __name__ == "__main__"  :
+def main():
     sm = smg.SemMgr()
+    cp = ckp.CkipParser()
     parser = argparse.ArgumentParser(prog='main')
     parser.add_argument('itype', metavar='itype', choices=['raw','id','treestr']
                         , type=str, help='input type: %(choices)s ')
@@ -85,19 +73,16 @@ if __name__ == "__main__"  :
      
     input_str = args.inpstr
 
-    print input_str
+    #print input_str
     t1 = None
     if args.itype == 'raw':
-        flist = [sinica_parse_print_0,treestr_to_tree ]
-        #tree_str = sinica_parse_0(input_str)
-        #t1 =  treestr_to_tree(tree_str)
+        flist = [ cp.str_raw_to_str_tree,  cp.str_tree_to_tree]
 
     elif args.itype == 'treestr':
-        flist = [treestr_to_tree ]
-        #t1 =  treestr_to_tree(input_str)
+        flist = [cp.str_tree_to_tree]
 
     elif args.itype == 'id':
-        flist = [lambda x : _INPUT_DICT[int(x)],treestr_to_tree ]
+        flist = [lambda x : _INPUT_DICT[int(x)],cp.str_tree_to_tree ]
         
     t_list = map(lambda y : reduce(lambda x,f: f(x), flist , y) , input_str)
      
@@ -108,28 +93,12 @@ if __name__ == "__main__"  :
     elif args.otype == 'sem':
         s_list = map(lambda t :  sm.tree_to_sem(t) ,t_list)
         for s in s_list:
-            print t 
+            print s 
 
     elif args.otype == 'prove':
         s_list = map(lambda t :  sm.tree_to_sem(t) ,t_list)
         print pv.ProveMgr().prove( map( lambda s : sm.sem_remove_chinese(s) , s_list[0:-1]) , sm.sem_remove_chinese(s_list[-1]))
 
-    #s1 = args
-    #print s1
-    #demo1() 
-#    test1()
-#    t1 = tree_choice(3)
-#    t2 = tree_choice(4)
-#    s1 = sm.tree_to_sem(t1)
-#    s2 = sm.tree_to_sem(t2)
-#    print s1
-#    #print sm.sem_remove_chinese(s1)
-#    print s2
-#    #print sm.sem_remove_chinese(s2)
-#    p1 = lgc.LogicParser().parse(sm.sem_remove_chinese(s1).encode('utf-8'))
-#    p2 = lgc.LogicParser().parse(sm.sem_remove_chinese(s2).encode('utf-8'))
-#    #print p1.__str__()
-#    #print p2.__str__()
-#    print Prover9().prove(p1, [p2])
-#    #  smg.SemParserV1(tree).get_sem()
 
+if __name__ == "__main__"  :
+    main()
