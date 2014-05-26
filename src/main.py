@@ -3,7 +3,7 @@ from nltk import Tree
 #from sys import argv
 #from buildtree import run_parser, treestr_to_tree
 #from connect_ckip import sinica_parse, sinica_parse_0
-from MyPrinter import MyPrinter
+from myPrinter import MyPrinter
 import semMgr as smg
 import ckipParser as ckp
 import proveMgr as pv

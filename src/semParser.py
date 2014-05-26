@@ -2,7 +2,7 @@
 from copy import deepcopy
 import nltk.sem.logic as lg
 import operator
-from MyPrinter import MyPrinter
+from myPrinter import MyPrinter
 from buildtree import run_parser
 from operator import itemgetter
 from util import *

@@ -3,7 +3,7 @@ from httpInterface import RequestInterface
 from util import * 
 import re
 
-class ChineseLsaInterface(object):
+class ClsaInterface(object):
 
     def __init__(self):
         self.interface = RequestInterface()

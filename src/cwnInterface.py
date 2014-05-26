@@ -2,7 +2,7 @@
 from sqliteInterface import SQLiteInterface 
 from util import *
 from operator import itemgetter
-from MyPrinter import MyPrinter
+from myPrinter import MyPrinter
 import re
 
 _CWN_PATH = '../data/cwn_dirty.sqlite'

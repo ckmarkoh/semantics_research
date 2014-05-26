@@ -6,6 +6,7 @@ from ckipParser import CkipParser
 from semParser import SemParserV1
 from proveMgr import ProveMgr
 from cwnInterface import CwnInterface
+from clsaInterface import ClsaInterface
 from util import *
 import re
 
@@ -18,11 +19,14 @@ _TEST_DICT = {
 3:u"S(agent:NP(Head:Nb:布魯圖)|Head:VC2:刺殺|goal:NP(Head:Nba:凱撒))",
 6:u"S(agent:NP(Head:Nb:布魯圖)|location:PP(Head:P21:在|DUMMY:NP(Head:Nc:元老院))|instrument:PP(Head:P39:用|DUMMY:NP(Head:Nab:刀子))|Head:VC2:刺殺|goal:NP(Head:Nba:凱撒))",
 7:u"S(agent:NP(Head:Nb:江宜樺)|time:Dd:已|manner:VH11:清楚|Head:VC31:表達|theme:NP(Head:Nac:立場))", 
-9:u"S(agent:NP(Head:Nba:馬英九)|location:PP(Head:P21:在|DUMMY:NP(Head:Nca:中研院))|Head:VC31:發表|theme:NP(Head:Nad:演講))",
+8:u"S(agent:NP(Head:Nba:馬英九)|location:PP(Head:P21:在|DUMMY:NP(Head:Nca:中研院))|Head:VC31:發表|theme:NP(Head:Nad:演講))",
+9:u"S(agent:NP(Head:Nba:馬英九)|location:PP(Head:P21:在|DUMMY:NP(Head:Nca:研究院))|Head:VC31:發表|theme:NP(Head:Nad:演講))",
 10:u"S(agent:NP(Head:Nba:馬英九)|location:PP(Head:P21:在|DUMMY:NP(Head:Nca:臺北))|Head:VC31:發表|theme:NP(Head:Nad:演講))",
 11:u"S(agent:NP(Head:Nba:馬英九)|Head:VC31:發表|theme:NP(Head:Nad:演講))",
 12:u"S(agent:NP(Head:Nba:馬英九)|Head:VC31:發表|theme:NP(Head:Nac:演說))",
 13:u"S(agent:NP(Head:Nba:馬英九)|Head:VC31:發表|theme:NP(Head:Nac:說話))",
+14:u"S(theme:NP(Head:Nba:若望保祿|quantifier:DM:二世)|Head:V_12:是|range:NP(property:Ncb:教廷|property:Nac:國家|Head:Nab:領導人))",
+15:u"S(theme:NP(Head:Nba:若望保祿|quantifier:DM:二世)|Head:V_12:是|range:NP(property:Ncb:教廷|property:Nac:國家|Head:Nab:領袖))",
 }
 
 
@@ -34,6 +38,7 @@ class SemMgr(object):
         self._ckip_parser = CkipParser()
         self._pm = ProveMgr()
         self._cwn = CwnInterface()
+        self._clsa = ClsaInterface()
 
     def gen_ch_id(self, ch_word):
         return 'A'+"_".join(map(lambda c: hex(ord(c)).upper() , ch_word ))
@@ -90,8 +95,6 @@ class SemMgr(object):
         con_unsolved, pre_unsolved, unsolved_rule =   self._pm.prove_catch_unsolved(pre_str,con_str)
         return self.sem_recover_chinese( [ pre_unsolved, con_unsolved, unsolved_rule] )
 
-    def cwn_check_entail(self,w1,w2):
-        return w2 in self._cwn.get_entail_lemma(w1)
     
     def prover_fix_entail(self, pre_str_raw, con_str_raw):
         unsolved =  self.prover_catch_unsolved(pre_str_raw, con_str_raw)
@@ -101,15 +104,26 @@ class SemMgr(object):
         if solved:
            return unsolved[2]
         else:
-            return False
-    
+            solved = self.clsa_check_entail(unsolved[0],unsolved[1])
+            if solved:
+                return unsolved[2]
+            else:
+                return False
+
+    def cwn_check_entail(self,w1,w2):
+        return w2 in self._cwn.get_entail_lemma(w1)
+
+    def clsa_check_entail(self,w1,w2):
+        return 0.2 < self._clsa.get_lsa(w1,w2)
         
 
 if __name__ == "__main__" :#or __name__ == "semmgr":
     sm = SemMgr()
     #tree_str = _TEST_DICT[1]
-    s1 = _TEST_DICT[10]
-    s2 = _TEST_DICT[12]
+    #cwn:11,12 
+    #clsa:8,9
+    s1 = _TEST_DICT[8]
+    s2 = _TEST_DICT[9]
     t1 =  sm.str_tree_to_sem(s1)
     t2 =  sm.str_tree_to_sem(s2)
     print t1
