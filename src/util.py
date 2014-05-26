@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys, StringIO
+
+import lxml.html as HTML                                                                                                               
 def to_unicode(sem_str_raw):
     if isinstance( sem_str_raw, str):
         sem_str = sem_str_raw.decode('utf-8') 
@@ -31,3 +33,12 @@ def capture_output(fn):
     return inner
     
 
+def xpath_parse_all(html,xpath):
+    return HTML.document_fromstring(html).xpath(xpath)
+
+def xpath_parse_one(html,xpath,xid=0): 
+    result = xpath_parse_all(html,xpath)
+    if xid >= len(result):
+         return "" 
+    else:
+         return xpath_parse_all(html,xpath)[xid]

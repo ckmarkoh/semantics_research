@@ -109,7 +109,7 @@ if __name__ == "__main__" :#or __name__ == "semmgr":
     sm = SemMgr()
     #tree_str = _TEST_DICT[1]
     s1 = _TEST_DICT[10]
-    s2 = _TEST_DICT[13]
+    s2 = _TEST_DICT[12]
     t1 =  sm.str_tree_to_sem(s1)
     t2 =  sm.str_tree_to_sem(s2)
     print t1
@@ -121,6 +121,7 @@ if __name__ == "__main__" :#or __name__ == "semmgr":
         print sm.prover_prove([t1,uns],t2)
     else:
         print False
+
     #print unsolved_rule
     #t1 = run_parser(tree_str)
     #s1 = sm.str_tree_to_sem(tree_str)

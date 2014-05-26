@@ -37,12 +37,17 @@ def demo2():
     print ""
     print "semantic of s1:",s1
     print "semantic of s2:",s2
+    s = sm.sem_remove_chinese(s1).encode('utf-8')
     p1 = lgc.LogicParser().parse(sm.sem_remove_chinese(s1).encode('utf-8'))
     p2 = lgc.LogicParser().parse(sm.sem_remove_chinese(s2).encode('utf-8'))
+    s0 = sm.sem_recover_chinese(s)
+    print s
+    print s0
     print "s1 --> s2"
     print Prover9().prove(p2, [p1])
     print "s2 --> s1"
     print Prover9().prove(p1, [p2])
 
+
 if __name__ == "__main__":
-    demo1() 
+    demo2() 

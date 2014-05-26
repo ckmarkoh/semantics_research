@@ -2,6 +2,7 @@
 import ply.lex as lex
 import ply.yacc as yacc
 from nltk import Tree
+from util import to_unicode
 
 # List of token names.   This is always required
 tokens = (
@@ -112,7 +113,7 @@ parser = yacc.yacc()
 
 def run_parser(data):
     #data = u'S(hypothesis:Cbaa:如果|experiencer:NP(Head:Nhac:您)|Head:VK2:需要|goal:NP(quantifier:Neqa:大量|Head:Nad:剖析))'
-    data=data.replace(u'\u2027\u7684','_DE')
+    data=to_unicode(data).replace(u'\u2027\u7684','_DE')
     #print [data]
     result = parser.parse(data)
     
