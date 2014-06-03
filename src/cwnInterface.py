@@ -72,11 +72,11 @@ class CwnInterface(SQLiteInterface):
 
 def main():
     cwn = CwnInterface()
-    MyPrinter(cwn.get_lemma_relation(u"演說".encode('utf-8'))).print_data()
-    #MyPrinter(cwn.get_lemma_relation(u"狗".encode('utf-8'))).print_data()
-    #MyPrinter(cwn.get_lemma_relation(u"棒".encode('utf-8'))).print_data()
-    #MyPrinter(cwn.get_lemma_relation(u"吸".encode('utf-8'))).print_data()
-    #MyPrinter(cwn.get_lemma_relation(u"好".encode('utf-8'))).print_data()
+    MyPrinter(cwn.get_lemma_relation(u"演說".encode('utf-8')))
+    #MyPrinter(cwn.get_lemma_relation(u"狗".encode('utf-8')))
+    #MyPrinter(cwn.get_lemma_relation(u"棒".encode('utf-8')))
+    #MyPrinter(cwn.get_lemma_relation(u"吸".encode('utf-8')))
+    #MyPrinter(cwn.get_lemma_relation(u"好".encode('utf-8')))
 
 if __name__ == "__main__":
     main()

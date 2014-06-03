@@ -43,18 +43,39 @@ class SemMgr(object):
     def gen_ch_id(self, ch_word):
         return 'A'+"_".join(map(lambda c: hex(ord(c)).upper() , ch_word ))
 
+    def str_raw_to_str_tree(self,raw_str):
+        return self._ckip_parser.str_raw_to_str_tree(raw_str)
+
+    def str_tree_to_tree(self,str_tree):
+        return self._ckip_parser.str_tree_to_tree(str_tree)
+
     def str_raw_to_sem(self, raw_str):
-        return self.str_tree_to_sem(self._ckip_parser.str_raw_to_str_tree(raw_str))
+        #return self.str_tree_to_sem(self._ckip_parser.str_raw_to_str_tree(raw_str))
+        return self.str_tree_to_sem(self.str_raw_to_str_tree(raw_str))
 
     def str_tree_to_sem(self,str_tree): 
-        return self.tree_to_sem(self._ckip_parser.str_tree_to_tree(str_tree))
+        return self.tree_to_sem(self.str_tree_to_tree(str_tree))
 
     def tree_to_sem(self,tree):
         if tree.__str__() not in self._str_tree_dict.keys():
             self._str_tree_dict.update({tree.__str__() : self._sem_parser.get_parsed_sem(tree)})
         return self._str_tree_dict[tree.__str__()]
+   
+    def tree_to_sem_latex(self,tree):  
+        sem = self.tree_to_sem(tree)
+        sem_ch = re.search(ur'([\u4e00-\u9fff\uff01-\uff5e]+)',sem)
+        ch_dict = {}
+        while sem_ch != None: 
+            ch = sem_ch.group()
+            ch_id = self.gen_ch_id(ch)
+            ch_dict.update( {ch_id: ch} )
+            sem = sem.replace(ch,r"\text{%s}"%(ch_id))
+            sem_ch = re.search(ur'([\u4e00-\u9fff\uff01-\uff5e]+)',sem)
+        for ch_id in ch_dict:
+            sem = sem.replace(ch_id,ch_dict[ch_id])
+        sem = sem.replace('&',r'\wedge')
+        return sem
 
-    
     def sem_conversion_chinese(self,sem_input,no_ch=True):
         if isinstance( sem_input, list):
             return map(lambda sem_str : self.sem_conversion_chinese(sem_str,no_ch) ,sem_input)
@@ -119,11 +140,11 @@ class SemMgr(object):
 
 if __name__ == "__main__" :#or __name__ == "semmgr":
     sm = SemMgr()
-    #tree_str = _TEST_DICT[1]
+    #str_tree = _TEST_DICT[1]
     #cwn:11,12 
     #clsa:8,9
-    s1 = _TEST_DICT[8]
-    s2 = _TEST_DICT[9]
+    s1 = _TEST_DICT[11]
+    s2 = _TEST_DICT[12]
     t1 =  sm.str_tree_to_sem(s1)
     t2 =  sm.str_tree_to_sem(s2)
     print t1
@@ -137,6 +158,6 @@ if __name__ == "__main__" :#or __name__ == "semmgr":
         print False
 
     #print unsolved_rule
-    #t1 = run_parser(tree_str)
-    #s1 = sm.str_tree_to_sem(tree_str)
+    #t1 = run_parser(str_tree)
+    #s1 = sm.str_tree_to_sem(str_tree)
     #print s1

@@ -31,4 +31,4 @@ class RiteDataReader(object):
 
 if __name__ == "__main__": 
     r = RiteDataReader()
-    MyPrinter(r.select_by_label("R")).print_data()
+    MyPrinter(r.select_by_label("R"))

@@ -136,7 +136,7 @@ class SemParserV1(object):
         
 
     def change_node_sem_1(self, sem, role, pos):
-        if role and role != "DUMMY" and role != "Head" and sem !='' and role != "head":
+        if role and role != "DUMMY" and role != "Head" and sem !='' and role != "head" :
             #if pos[0] in ['P', 'N', 'D'] or pos[0:2] in ['VH']:
             #print 'sem',sem
             #print 'role',role
@@ -173,6 +173,6 @@ class SemParserV1(object):
 
 if __name__ == "__main__" : # or __name__ == "semParser":
     sp = SemParserV1() 
-    tree_str = _TEST_DICT[int(argv[1])]
-    t1 = run_parser(tree_str)
+    str_tree = _TEST_DICT[int(argv[1])]
+    t1 = run_parser(str_tree)
     print sp.get_parsed_sem(t1).encode('utf-8')

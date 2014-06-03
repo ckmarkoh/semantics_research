@@ -20,8 +20,6 @@ class CkipParser(object):
    #         'Accept-Language': 'zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4',
    #         'Accept-Encoding': 'gzip,deflate,sdch'
    #     }
-
-
    # def request_post(url, data, self.headers=__HEADERS ):
    #     post = requests.post
    #     r = post(url, data=data, headers=headers )
@@ -51,9 +49,9 @@ class CkipParser(object):
         return  self.sinica_parse(raw_str,run_type)[0]
 
     def sinica_parse_print_0(self, raw_str, run_type="browser"):
-        tree_str = self.sinica_parse_0(raw_str,run_type)
-        print to_utf8_str(tree_str )
-        return tree_str 
+        str_tree = self.sinica_parse_0(raw_str,run_type)
+        print to_utf8_str(str_tree )
+        return str_tree 
 
     def str_raw_to_str_tree(self, raw_str ,to_print=True):
         if to_print:
@@ -61,8 +59,12 @@ class CkipParser(object):
         else:
             return self.sinica_parse_0(raw_str)
 
-    def str_tree_to_tree(self, tree_str):
-        return run_parser(tree_str)
+    def str_tree_to_tree(self, str_tree):
+        str_tree_re = re.search(r"#[0-9.:]*\[[0-9]\] ([^#]+)#",str_tree)
+        if str_tree_re:
+            str_tree = str_tree_re.group(1)
+            print str_tree
+        return run_parser(str_tree)
 
 def main():
     pass

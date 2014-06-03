@@ -9,9 +9,12 @@ import codecs
 from sys import argv
 
 class MyPrinter(object):
-    def __init__(self,data,str_close=False):
+    def __init__(self,data,str_close=False,to_print=True):
         self.data=data
         self.str_close=str_close
+        if to_print:
+            self.print_data()
+        
 
     def __str__(self):
         return self.classifier(self.data,0)

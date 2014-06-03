@@ -32,10 +32,6 @@ def test(k1,k2):
     print ""
     print "semantic of s1:",s1
     print "semantic of s2:",s2
-    #assert s1 == sm.sem_recover_chinese(sm.sem_remove_chinese(s1))
-    #assert s2 == sm.sem_recover_chinese(sm.sem_remove_chinese(s2))
-    #r1 =  pv.ProveMgr().prove(sm.sem_remove_chinese(s1), sm.sem_remove_chinese(s2))
-    #r2 =  pv.ProveMgr().prove(sm.sem_remove_chinese(s2), sm.sem_remove_chinese(s1))
 
     r1 = sm.prover_prove([s1],s2)
     r2 = sm.prover_prove([s2],s1)
@@ -55,22 +51,7 @@ def test_single(k1,k2):
     s2 = sm.str_tree_to_sem(t2)
     print s1
     print s2
-   # p1 = lgc.LogicParser().parse(sm.sem_remove_chinese(s1).encode('utf-8'))
-   # p2 = lgc.LogicParser().parse(sm.sem_remove_chinese(s2).encode('utf-8'))
-
-    #print sm.sem_remove_chinese(s1).encode('utf-8')
-    #print sm.sem_remove_chinese(s2).encode('utf-8')
-
-    #old_stdout = sys.stdout
-    #capturer = StringIO.StringIO()
-    #sys.stdout = capturer
-    ##capture start
-    #r1 =  pv.ProveMgr().prove(sm.sem_remove_chinese(s1), sm.sem_remove_chinese(s2),True)
     r1=sm.prover_prove_tabu([s1],s2)
-    ## capture end
-
-    #sys.stdout = old_stdout
-    #output = sm.sem_recover_chinese(capturer.getvalue())
 
     return r1 
 
@@ -79,9 +60,9 @@ def main():
     test_result = map(lambda i: test( (i+1)*2-1, (i+1)*2) , range(len(_TEST_DICT)/2))
     print map(itemgetter(0),test_result) 
     print map(itemgetter(1),test_result) 
+    #print test_single(9, 10)
 
 
 
 if __name__ == "__main__":
     main() 
-    #print test_single(9, 10)

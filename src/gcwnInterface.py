@@ -12,20 +12,30 @@ class GcwnInterface(SQLiteInterface):
         super(GcwnInterface, self).__init__(_CWN_PATH)
             
     def get_lemma(self, lemma): 
-        return self.select('cwn_lemma'
+        s= self.select('cwn_lemma'
                            ,where=' lemma_type="%s" '%(lemma)
                           )
+        print "lemma"
+        MyPrinter(s)
+        return s
 
     def get_sense(self, lemma_id):
-        return self.select('cwn_sense'
+        s= self.select('cwn_sense'
                            ,column=['sense_id','sense_def']
                            ,where='lemma_id = "%s"'%(lemma_id)
                           )
+        print "sense"
+        MyPrinter(s)
+        return s
+
     def get_facet(self,sense_id):
-        return self.select('cwn_facet'
+        s= self.select('cwn_facet'
                            ,column=['facet_id','facet_def']
                            ,where='sense_id = "%s"'%(sense_id)
                           )
+        print "facet"
+        MyPrinter(s)
+        return s
 
     #def get_relation(self,cwn_id):
     #    return self.select('cwn_relation'
@@ -66,12 +76,13 @@ class GcwnInterface(SQLiteInterface):
         return relation_result
 
 def main():
-    cwn = CwnInterface()
-    MyPrinter(cwn.get_lemma_relation(u"演說".encode('utf-8'))).print_data()
-    MyPrinter(cwn.get_lemma_relation(u"狗".encode('utf-8'))).print_data()
-    MyPrinter(cwn.get_lemma_relation(u"棒".encode('utf-8'))).print_data()
-    MyPrinter(cwn.get_lemma_relation(u"吸".encode('utf-8'))).print_data()
-    MyPrinter(cwn.get_lemma_relation(u"好".encode('utf-8'))).print_data()
+    cwn = GcwnInterface()
+    #MyPrinter(cwn.get_lemma_relation(u"演說".encode('utf-8')))
+    MyPrinter(cwn.get_lemma_relation(u"狗".encode('utf-8')))
+    MyPrinter(cwn.get_lemma_relation(u"犬".encode('utf-8')))
+    #MyPrinter(cwn.get_lemma_relation(u"棒".encode('utf-8')))
+    #MyPrinter(cwn.get_lemma_relation(u"吸".encode('utf-8')))
+    #MyPrinter(cwn.get_lemma_relation(u"好".encode('utf-8')))
 
 if __name__ == "__main__":
     main()

@@ -138,7 +138,7 @@ class SemParserV0(object):
         nary_dict = dict( map(lambda node : ( node['role'],node )
                               ,map(lambda subtree : self.tree_traverse(subtree)  , tree) ))
 
-        #MyPrinter(nary_dict).print_data()
+        #MyPrinter(nary_dict)
         map(lambda n_elem : n_elem.update({ 'sem':self.change_node_sem_1(n_elem['sem'],n_elem['role'],n_elem['pos'])}) 
         #                    if 'P(x,e)' in n_elem['sem'] else n_elem 
                              ,nary_dict.values()    )
@@ -157,6 +157,6 @@ class SemParserV0(object):
 
 if __name__ == "__main__" #or __name__ == "semParser":
     sm = SemParserV0() 
-    tree_str = _TEST_DICT[int(argv[1])]
-    t1 = run_parser(tree_str)
+    str_tree = _TEST_DICT[int(argv[1])]
+    t1 = run_parser(str_tree)
     print sm.get_parsed_sem(t1)
