@@ -6,11 +6,16 @@ import time
 import requests
 from util import *
 from buildtree import run_parser
+from urlparse import urlparse,urljoin
 
+import urllib, urllib2, cookielib
 
 class CkipParser(object):
     def __init__(self):
-        self._sleep=1
+        self._sleep = 0
+        self._url = "http://parser.iis.sinica.edu.tw/"
+
+
    #     self._headers = {
    #         'User-Agent':
    #             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) \
@@ -25,25 +30,45 @@ class CkipParser(object):
    #     r = post(url, data=data, headers=headers )
    #     return r
 
-    def sinica_parse(self, raw_str, run_type="browser"):
+    def read_data_from_browser(self, raw_str):
+        with Browser('chrome') as browser:
+            browser.visit(self._url)
+            textarea=browser.find_by_xpath("//form[2]/table[1]/tbody[1]/tr[1]/td[1]/textarea[1]")
+            textarea.fill(to_unicode(raw_str))
+            parse_button=browser.find_by_xpath("//form[2]/table[1]/tbody[1]/tr[1]/td[1]/input[1]")
+            parse_button.click()
+            time.sleep(self._sleep)
+            raw_result=browser.find_by_xpath("//table[@id='data_table']/tbody/tr/td/nobr")
+        return raw_result
+
+    def read_data_from_urllib(self, raw_str):
+        input_str = to_unicode(raw_str)
+        string = input_str.encode('cp950')
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.CookieJar()))
+        opener.addheaders = [
+            ('User-Agent', 'Mozilla/5.0 Gecko/20100101 Firefox/29.0'),
+            ('referer', self._url), ('Host', urlparse(self._url).netloc)
+        ]
+        pre_page = urllib.urlopen(self._url).read()
+        fid = re.search('name="id" value="(\d+)"', pre_page).group(1)
+        postdata = urllib.urlencode({ 'myTag':string,'id':fid})
+        html = opener.open(urljoin(self._url,'svr/webparser.asp'), postdata).read().decode('cp950')
+        raw_result = xpath_parse_all(html,"//table[@id='data_table']/tr/td/nobr")
+        return raw_result
+
+    def sinica_parse(self, raw_str, run_type="urllib"):
         if run_type == "browser":
-            with Browser('chrome') as browser:
-                browser.visit("http://parser.iis.sinica.edu.tw/")
-                textarea=browser.find_by_xpath("//form[2]/table[1]/tbody[1]/tr[1]/td[1]/textarea[1]")
-                textarea.fill(to_unicode(raw_str))
-                parse_button=browser.find_by_xpath("//form[2]/table[1]/tbody[1]/tr[1]/td[1]/input[1]")
-                parse_button.click()
-                time.sleep(self._sleep)
-                raw_result=browser.find_by_xpath("//table[@id='data_table']/tbody/tr/td/nobr")
-                #print raw_result
-                array_result=[]
-                for rsl in raw_result:
-                    str_result=re.match("#[^S]+(S[^#]+)#.*",rsl.text)
-                    if str_result:
-                        array_result.append(str_result.group(1))
-                return array_result
+            raw_result = self.read_data_from_browser(raw_str)
+        elif run_type == "urllib":
+            raw_result = self.read_data_from_urllib(raw_str)
         else:
-            pass
+            assert 0
+        array_result = []
+        for rsl in raw_result:
+            str_result=re.match("#[^S]+(S[^#]+)#.*",rsl.text)
+            if str_result:
+                array_result.append(str_result.group(1))
+        return array_result
             
     def sinica_parse_0(self, raw_str, run_type="browser"):
         return  self.sinica_parse(raw_str,run_type)[0]
@@ -66,7 +91,11 @@ class CkipParser(object):
             print str_tree
         return run_parser(str_tree)
 
+
+
+
 def main():
+    #print CkipParser().sinica_parse(u"馬英九在中研院發表演講")
     pass
     #target_str=argv[1]
     #result=sinica_parse(target_str)
