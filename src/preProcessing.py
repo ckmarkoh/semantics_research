@@ -85,6 +85,8 @@ class PreProcessing(object):
 
     def to_fullwidth(self,s):
         return self.eng_to_fullwidth(self.num_to_fullwidth(s))
+
+    def remove
         
 if __name__ == "__main__":
    p = PreProcessing() 
