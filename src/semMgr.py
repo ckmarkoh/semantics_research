@@ -7,8 +7,10 @@ from semParser import SemParserV1
 from proveMgr import ProveMgr
 from cwnInterface import CwnInterface
 from clsaInterface import ClsaInterface
+from latexGen import LatexGen
 from util import *
 import re
+from myPrinter import MyPrinter
 
 
 
@@ -17,7 +19,8 @@ _TEST_DICT = {
 1:u"S(agent:NP(Head:Nhaa:我)|Head:VC2:幫助|goal:NP(property:Nbc:陳|Head:Nab:小姐))",
 2:u"S(agent:NP(Head:Nba:馬英九)|time:Ndabd:今天|location:PP(Head:P21:在|DUMMY:NP(Head:Nca:中研院))|Head:VC31:發表|theme:NP(Head:Nad:演講))",
 3:u"S(agent:NP(Head:Nb:布魯圖)|Head:VC2:刺殺|goal:NP(Head:Nba:凱撒))",
-6:u"S(agent:NP(Head:Nb:布魯圖)|location:PP(Head:P21:在|DUMMY:NP(Head:Nc:元老院))|instrument:PP(Head:P39:用|DUMMY:NP(Head:Nab:刀子))|Head:VC2:刺殺|goal:NP(Head:Nba:凱撒))",
+4:u"S(agent:NP(Head:Nb:布魯圖)|instrument:PP(Head:P39:用|DUMMY:NP(Head:Nab:刀子))|Head:VC2:刺殺|goal:NP(Head:Nba:凱撒))",
+5:u"S(agent:NP(Head:Nb:布魯圖)|location:PP(Head:P21:在|DUMMY:NP(Head:Nc:元老院))|instrument:PP(Head:P39:用|DUMMY:NP(Head:Nab:刀子))|Head:VC2:刺殺|goal:NP(Head:Nba:凱撒))",
 7:u"S(agent:NP(Head:Nb:江宜樺)|time:Dd:已|manner:VH11:清楚|Head:VC31:表達|theme:NP(Head:Nac:立場))", 
 8:u"S(agent:NP(Head:Nba:馬英九)|location:PP(Head:P21:在|DUMMY:NP(Head:Nca:中研院))|Head:VC31:發表|theme:NP(Head:Nad:演講))",
 9:u"S(agent:NP(Head:Nba:馬英九)|location:PP(Head:P21:在|DUMMY:NP(Head:Nca:研究院))|Head:VC31:發表|theme:NP(Head:Nad:演講))",
@@ -27,6 +30,10 @@ _TEST_DICT = {
 13:u"S(agent:NP(Head:Nba:馬英九)|Head:VC31:發表|theme:NP(Head:Nac:說話))",
 14:u"S(theme:NP(Head:Nba:若望保祿|quantifier:DM:二世)|Head:V_12:是|range:NP(property:Ncb:教廷|property:Nac:國家|Head:Nab:領導人))",
 15:u"S(theme:NP(Head:Nba:若望保祿|quantifier:DM:二世)|Head:V_12:是|range:NP(property:Ncb:教廷|property:Nac:國家|Head:Nab:領袖))",
+15201:"S(theme:NP(Head:Nba:張藝謀)|time:Dd:曾|topic:PP(Head:P35:與|DUMMY:NP(Head:Nb:鞏俐))|Head:V_12:是|range:NP(property:Nab:戀人|Head:Nad:關係))",
+15202:"S(theme:Nba(DUMMY1:Nba:張藝謀|Head:Caa:與|DUMMY2:Nb:鞏俐)|time:Dd:曾|Head:VH11:相戀)",
+20:u"S(agent:NP(Head:Nb:海生館)|Head:VE2:研究|goal:S(agent:NP(apposition:Nab:人員|Head:Nb:謝泓諺)|Head:VE2:發現|goal:S(theme:NP(property:Na:水螅體|Head:Nad:數量)|Head:VH16: 增加)))",
+21:u"S(agent:NP(apposition:NP(property:Nb:海生館|property:Nv:研究|Head:Nab:人員)|Head:Nb:謝泓諺)|Head:VE2:發現|goal:S(theme:NP(property:Na:>水螅體|Head:Nad:數量)|Head:VH16:增加))",
 }
 
 
@@ -39,6 +46,7 @@ class SemMgr(object):
         self._pm = ProveMgr()
         self._cwn = CwnInterface()
         self._clsa = ClsaInterface()
+        self._lgen = LatexGen()
 
     def gen_ch_id(self, ch_word):
         return 'A'+"_".join(map(lambda c: hex(ord(c)).upper() , ch_word ))
@@ -61,20 +69,27 @@ class SemMgr(object):
             self._str_tree_dict.update({tree.__str__() : self._sem_parser.get_parsed_sem(tree)})
         return self._str_tree_dict[tree.__str__()]
    
+
+    def tree_to_latex(self,tree):  
+        ltree = self._lgen.tree_to_latex(tree)
+        return ltree
+
     def tree_to_sem_latex(self,tree):  
         sem = self.tree_to_sem(tree)
-        sem_ch = re.search(ur'([\u4e00-\u9fff\uff01-\uff5e]+)',sem)
-        ch_dict = {}
-        while sem_ch != None: 
-            ch = sem_ch.group()
-            ch_id = self.gen_ch_id(ch)
-            ch_dict.update( {ch_id: ch} )
-            sem = sem.replace(ch,r"\text{%s}"%(ch_id))
-            sem_ch = re.search(ur'([\u4e00-\u9fff\uff01-\uff5e]+)',sem)
-        for ch_id in ch_dict:
-            sem = sem.replace(ch_id,ch_dict[ch_id])
-        sem = sem.replace('&',r'\wedge')
-        return sem
+        lsem = self._lgen.sem_to_latex(sem)
+        #sem_ch = re.search(ur'([\u4e00-\u9fff\uff01-\uff5e]+)',sem)
+        #ch_dict = {}
+        #while sem_ch != None: 
+        #    ch = sem_ch.group()
+        #    ch_id = self.gen_ch_id(ch)
+        #    ch_dict.update( {ch_id: ch} )
+        #    sem = sem.replace(ch,r"\text{%s}"%(ch_id))
+        #    sem_ch = re.search(ur'([\u4e00-\u9fff\uff01-\uff5e]+)',sem)
+        #for ch_id in ch_dict:
+        #    sem = sem.replace(ch_id,ch_dict[ch_id])
+        #sem = sem.replace('&',r'\wedge')
+        return lsem
+
 
     def sem_conversion_chinese(self,sem_input,no_ch=True):
         if isinstance( sem_input, list):
@@ -107,9 +122,19 @@ class SemMgr(object):
         return self._pm.prove(self.sem_remove_chinese(pre_str)
                                     ,self.sem_remove_chinese(con_str))
 
-    def prover_prove_tabu(self, pre_str, con_str):
-        return self._pm.prove(self.sem_remove_chinese(pre_str)
-                                    ,self.sem_remove_chinese(con_str),tabu=True)
+    def prover_prove_output(self, pre_str, con_str, prover):
+        result = self._pm.prove_prover_catch_output(self.sem_remove_chinese(pre_str)
+                                    ,self.sem_remove_chinese(con_str)
+                                    ,prover 
+                                    )
+        return self.sem_recover_chinese(result[3])
+
+    def prover_prove_select(self, pre_str, con_str, prover):
+        return self._pm.prove_prover(self.sem_remove_chinese(pre_str)
+                                    ,self.sem_remove_chinese(con_str)
+                                    ,prover 
+                                    )
+         
 
     def prover_catch_unsolved(self,pre_str_raw,con_str_raw):
         pre_str, con_str = self.sem_remove_chinese(pre_str_raw),self.sem_remove_chinese(con_str_raw)
@@ -138,26 +163,40 @@ class SemMgr(object):
         return 0.2 < self._clsa.get_lsa(w1,w2)
         
 
-if __name__ == "__main__" :#or __name__ == "semmgr":
-    sm = SemMgr()
+def main():
     #str_tree = _TEST_DICT[1]
     #cwn:11,12 
     #clsa:8,9
-    s1 = _TEST_DICT[11]
-    s2 = _TEST_DICT[12]
-    t1 =  sm.str_tree_to_sem(s1)
-    t2 =  sm.str_tree_to_sem(s2)
-    print t1
-    print t2
-    print sm.prover_prove([t1],t2)
-    uns = sm.prover_fix_entail(t1, t2) 
-    if uns:
-        print uns
-        print sm.prover_prove([t1,uns],t2)
-    else:
-        print False
+    #s1 = _TEST_DICT[4]
+    #s2 = _TEST_DICT[5]
+    #t1 =  sm.str_tree_to_sem(s1)
+    #t2 =  sm.str_tree_to_sem(s2)
+    #t1 = "A(x1) & B(x2) & C(x3)"
+    #t2 = "A(x1) & B(x2) & C(x3) & D(x4)"
+    #t4 = "x3=x4"
+    #t3 = "all x ( C(x)->D(x))"
+    #t1 = "A(x1) & B(x2) & C(x3) & E(x5) "
+    #t2 = "A(x1) & B(x2) & D(x4)"
+    t1 = "A(x1) & B(x2) & C(x3) & D(x4)"
+    t2 = "A(x1) & B(x2) & C(x3)"
+    #t3 = "C(n3) -> E(n5)"
+    print t1.encode('utf-8')
+    print t2.encode('utf-8')
+    MyPrinter(sm.prover_prove_select([t2],t1,"resolution"))
+    #MyPrinter(sm.prover_prove_tabu_output([t1],t2).encode('utf-8'))
+    #uns = sm.prover_fix_entail(t1, t2) 
+    #if uns:
+    #    print uns
+    #    print sm.prover_prove([t1,uns],t2)
+    #else:
+    #    print False
 
     #print unsolved_rule
     #t1 = run_parser(str_tree)
     #s1 = sm.str_tree_to_sem(str_tree)
     #print s1
+if __name__ == "__main__" :#or __name__ == "semmgr":
+    sm = SemMgr()
+    s = _TEST_DICT[20]  
+    t = sm.str_tree_to_tree(s)
+    sm.tree_to_latex(t)

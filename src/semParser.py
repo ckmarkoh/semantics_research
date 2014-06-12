@@ -155,8 +155,6 @@ class SemParserV1(object):
         nary_dict =  map(lambda node : ( node['role'],node )
                               ,map(lambda subtree : self.tree_traverse(subtree)  , tree) )
 
-        
-            
         map(lambda n_elem : n_elem.update({ 'sem':self.change_node_sem_1(n_elem['sem'],n_elem['role'],n_elem['pos'])}) 
                              ,map(itemgetter(1),nary_dict)    )
 

@@ -57,23 +57,25 @@ class CkipParser(object):
         return raw_result
 
     def sinica_parse(self, raw_str, run_type="urllib"):
-        if run_type == "browser":
-            raw_result = self.read_data_from_browser(raw_str)
-        elif run_type == "urllib":
-            raw_result = self.read_data_from_urllib(raw_str)
-        else:
-            assert 0
         array_result = []
+        while len(array_result) == 0 :
+            print "connect ckip"
+            if run_type == "browser":
+                raw_result = self.read_data_from_browser(raw_str)
+            elif run_type == "urllib":
+                raw_result = self.read_data_from_urllib(raw_str)
+            else:
+                assert 0
         for rsl in raw_result:
             str_result=re.match("#[^S]+(S[^#]+)#.*",rsl.text)
             if str_result:
                 array_result.append(str_result.group(1))
         return array_result
             
-    def sinica_parse_0(self, raw_str, run_type="browser"):
+    def sinica_parse_0(self, raw_str, run_type="urllib"):
         return  self.sinica_parse(raw_str,run_type)[0]
 
-    def sinica_parse_print_0(self, raw_str, run_type="browser"):
+    def sinica_parse_print_0(self, raw_str, run_type="urllib"):
         str_tree = self.sinica_parse_0(raw_str,run_type)
         print to_utf8_str(str_tree )
         return str_tree 

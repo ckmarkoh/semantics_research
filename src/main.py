@@ -40,6 +40,19 @@ _INPUT_DICT = {
 1802:u"S(agent:NP(property:Nca:尼泊爾|property:Nb:毛派|property:Nv4:叛亂|Head:Na:分子)|condition:PP(Head:P21:在|DUMMY:NP(property:NP(property:VH11:新|Head:Nab:國王)|Head:Nad:華誕))|time:Ndabf:前夕|Head:VC2:發動|goal:NP(Head:Nv1:攻擊))",
 2401:u"S(theme:NP(property:Nb:希拉瑞|Head:Nab:爵士)|Head:V_12:是|range:NP(predication:S‧的(head:S(agent:NP(Head:Nad:首位)|manner:VH11:成功|Head:VC2:攀上|goal:NP(Head:Na:聖母峰))|Head:DE:的)|Head:Nab:人))",
 2402:u"S(theme:NP(property:Nb:希拉瑞|Head:Nab:爵士)|time:Dd:即|Head:V_12:是|range:NP(property:GP(DUMMY:VP(Head:V_2:有|range:NP(Head:Nac:紀錄))|Head:Ng:以來)|quantifier:DM:第１位|predication:VP‧的(head:VP(Head:VC1:登上|goal:NP(Head:Na:聖母峰))|Head:DE:的)|Head:Nab:人))",
+40702:"S(theme:NP(property:Na:車臣|property:Nac:共和國|Head:Ncb:首府)|Head:V_12:是|range:NP(property:Nb:格洛斯|Head:Nab:尼))",
+40701:"S(theme:NP(property:Na:車臣|Head:Ncb:首府)|Head:VG2:為|range:NP(property:Nb:格洛斯|Head:Nab:尼))",
+20801:"S(agent:NP(property:Na:生物|Head:Nab:晶片)|deontics:Dbab:可|Head:VC2:用於|goal:NP(DUMMY:NP(property:Nab:血庫|Head:Nv:篩檢)|Head:Cab:等)|complement:VP(goal:NP(property:VH16:標準化|Head:Nab:標)|Head:VC2:驗))",
+20802:"S(agent:NP(property:Na:生物|Head:Nab:晶片)|deontics:Dbab:可|Head:VC2:用於|goal:NP(property:Nab:血庫|Head:Nv:篩檢))",
+12701:"S(theme:NP(Head:Nba:若望保祿|quantifier:DM:二世)|Head:V_12:是|range:NP(property:Ncb:教廷|property:Nac:國家|Head:Nab:領導人))",
+12702:"S(theme:NP(Head:Nba:若望保祿|quantifier:DM:二世)|Head:V_12:是|range:NP(property:Ncb:教廷|Head:Nab:領導人))",
+9401:"S(theme:NP(property:Nb:千禧|Head:Ncb:巨蛋)|Head:V_12:是|range:NP(quantifier:DM:一座|property:VP‧的(head:VP(manner:Dh:專|comparison:PP(Head:P:為|DUMMY:VP(Head:VC2:迎接|goal:NP(property:Nb:千禧|Head:Nac:年)|complement:VP(Head:VA11:來臨)))|result:Cbca:而|Head:VH11:特別|duration:NP(Head:Nad:設計))|Head:DE:的)|property:Nac:科技|Head:Ncb:展覽館)",
+9402:"S(theme:NP(property:Nb:千禧|Head:Ncb:巨蛋)|Head:V_12:是|range:NP(quantifier:DM:一座|predication:VP‧的(head:VP(manner:Dh:專|agent:PP(Head:P:為)|Head:VC2:迎接|goal:NP(quantifier:DM:２０００年|property:VP(Head:VA11:來臨|complement:VP(result:Cbca:而|Head:VH11:特別))|Head:Nad:設計))|Head:DE:的)|property:Nac:科技|Head:Ncb:展覽館))",
+15201:"S(theme:NP(Head:Nba:張藝謀)|time:Dd:曾|topic:PP(Head:P35:與|DUMMY:NP(Head:Nb:鞏俐))|Head:V_12:是|range:NP(property:Nab:戀人|Head:Nad:關係))",
+15202:"S(theme:Nba(DUMMY1:Nba:張藝謀|Head:Caa:與|DUMMY2:Nb:鞏俐)|time:Dd:曾|Head:VH11:相戀)",
+1:"S(agent:NP(Head:Nba:小明)|Head:VC2:玩|goal:NP(Head:Nab:電腦))",
+2:"S(agent:NP(Head:Nba:小明)|location:PP(Head:P21:在|DUMMY:NP(Head:Ncb:家))|Head:VC2:玩|goal:NP(Head:Nab:電腦))",
+3:"S(agent:NP(Head:Nba:小明)|time:Ndabd:昨天|Head:VC2:玩|goal:NP(Head:Nab:電腦))",
 }
 
 
@@ -49,7 +62,7 @@ def main():
     parser = argparse.ArgumentParser(prog='main')
     parser.add_argument('itype', metavar='itype', choices=['raw','treestr','id']
                         , type=str, help='input type: %(choices)s ')
-    parser.add_argument('otype', metavar='otype', choices=['tree', 'sem', 'lsem','prove']
+    parser.add_argument('otype', metavar='otype', choices=['tree','ltree','sem', 'lsem','prove']
                         , type=str, help='output type: %(choices)s ')
     parser.add_argument('inpstr', metavar='str', nargs='*', type=str, help='input string 1')
 #    parser.add_argument('--id', metavar='id', type=id, help='test file path')
@@ -77,6 +90,11 @@ def main():
     if args.otype == 'tree':
         for t in t_list:
             t.draw()
+
+    elif args.otype == 'ltree':
+        s_list = map(lambda t :  sm.tree_to_latex(t) ,t_list)
+        for s in s_list:
+            print s
 
     elif args.otype == 'sem':
         s_list = map(lambda t :  sm.tree_to_sem(t) ,t_list)

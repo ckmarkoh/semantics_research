@@ -16,3 +16,5 @@
 #NP(Head:NP(property:Nbc:柯|property:Nad:文哲|Head:Ndabd:昨天)|apposition:PP(Head:P21:在|DUMMY:NP(Head:Nad:演講)))
 #柯文哲昨天去台大演講
 #S(theme:NP(Head:Nb:柯文哲)|time:Ndabd:昨天|Head:VC1:去|goal:NP(property:Nca:台大|Head:Nad:演講))
+#S(agent:Nba(DUMMY1:Nb:柯文哲|Head:Caa:和|DUMMY2:Nb:連勝文)|time:Dd:將|Head:VC2:參選|goal:NP(Head:Nab:台北市長))
+#S(agent:NP(Head:Nba:小明)|location:PP(Head:P21:在|DUMMY:NP(Head:Ncb:家))|Head:VC2:打|goal:NP(Head:Nab:電腦))

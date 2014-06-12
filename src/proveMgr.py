@@ -13,14 +13,15 @@ import logging
 class ProveMgr(object):
 
     def __init__(self): 
-        self._prover = Prover9()
+        self._nine_prover = Prover9()
         self._tabu_prover = TableauProver()
+        self._reso_prover = ResolutionProver()
 
     
 
     def prove(self, pre_str, con_str):
         pre, con = self.parse_logic(pre_str,con_str)
-        return self._prover.prove(con,pre)
+        return self._nine_prover.prove(con,pre,verbose=True)
 
     def parse_logic(self, pre_str, con_str):
         if isinstance( pre_str, str) or isinstance( pre_str, unicode):
@@ -35,13 +36,20 @@ class ProveMgr(object):
        # else:
        #     return self.tabu_prover.prove(con,pre,verbose=True)
     
-    def prove_tabu(self,pre_str,con_str):
+    def prove_prover(self, pre_str, con_str, prover):
         pre, con = self.parse_logic(pre_str,con_str)
-        return (self._tabu_prover.prove(con,pre,verbose=True),pre,con)
-   
+        this_prover = {"nine"      : self._nine_prover,
+                       "tableau"   : self._tabu_prover,
+                       "resolution": self._reso_prover,
+                        } [prover]
+        return (this_prover.prove(con,pre,verbose=True),pre,con)
+
+    def prove_prover_catch_output(self,pre_str,con_str, prover):
+        (result, pre, con), output = apply(  capture_output(self.prove_prover), [ pre_str, con_str, prover] )
+        return (result,pre,con,output)
 
     def prove_catch_unsolved(self,pre_str,con_str):
-        (result, pre, con), output = apply(  capture_output(self.prove_tabu), [ pre_str, con_str] )
+        (result, pre, con), output = apply(  capture_output(self.prove_prover), [ pre_str, con_str, "tableau"] )
         unsolved = apply(lambda opt_line : 
                             opr.itemgetter(filter(lambda i: opt_line[i] == 'AGENDA EMPTY' 
                                                 ,range(1,len(opt_line)))[0]-1)(opt_line)
@@ -101,12 +109,6 @@ class ProveMgr(object):
     def logic_drop_var(self, lgf): 
         if isinstance(lgf, lgc.ApplicationExpression):
             lgf_0 , lgf_1 = lgf.visit(lambda x:x, lambda x:x)
-            #lgf_0 , lgf_1  = lgf.visit(lambda x:x, lambda x:x)
             return lgf_0,lgf_1
         else:
             assert 0 
-        #if isinstance(lgf, lgc.AndExpression):
-        #    lgf_0 , lgf_1 = lgf.visit(lambda x:x, lambda x:x)
-        #    return [lgf_1] + self.logic_split_and(lgf_0)
-        #else:
-        #    return [lgf]
