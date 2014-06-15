@@ -60,3 +60,7 @@ def xpath_parse_one(html,xpath,xid=0):
          return "" 
     else:
          return xpath_parse_all(html,xpath)[xid]
+
+
+def gen_ch_id( ch_word):
+    return 'A'+"_".join(map(lambda c: hex(ord(c)).upper() , ch_word ))

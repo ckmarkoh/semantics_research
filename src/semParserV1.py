@@ -25,7 +25,7 @@ _TEST_DICT = {
 }
 
 
-class SemParserV2(object):
+class SemParserV1(object):
     def __init__(self):
         self._traverse = {}
         self._chvar_dict = {}
@@ -45,13 +45,9 @@ class SemParserV2(object):
         #print sem_str
         return to_unicode(lg.LogicParser().parse(to_utf8_str(sem_str)).simplify().__str__())
 
-    def get_ch_word(self,sem_str):
-        return  "".join(re.findall(ur'[\u4e00-\u9fff]+',to_unicode(sem_str)))
-
     def gen_id(self, sem_str_raw):
-        #sem_str = to_unicode( sem_str_raw )
-        #ch_word = "".join(re.findall(ur'[\u4e00-\u9fff]+',sem_str))
-        ch_word = self.get_ch_word(sem_str_raw)
+        sem_str = to_unicode( sem_str_raw )
+        ch_word = "".join(re.findall(ur'[\u4e00-\u9fff]+',sem_str))
         if ch_word not in self._chvar_dict.keys(): 
             self._chvar_dict.update({ch_word : len(self._chvar_dict)}) 
     #    print 'id',self._num_id
@@ -140,10 +136,15 @@ class SemParserV2(object):
     def change_node_sem_1(self, sem, role, pos):
         if role and role not in [ "DUMMY","DUMMY1","DUMMY2"]  and role not in [ "Head","head"]  and sem !='' :
             #if pos[0] in ['P', 'N', 'D'] or pos[0:2] in ['VH']:
+            #print 'sem',sem
+            #print 'role',role
+            #print 'self.varname',self.gen_varname(pos,sem) 
             node_sem_str = r'\P Q n m .(P(n) & Q(n,m))((%s))(%s)(%s)'%(sem, role , self.gen_varname(pos,sem))
+            #print node_sem_str
             #print node_sem_str
             return self.logic_parse(node_sem_str)
         return sem
+
 
 
     def gen_node_sem_2(self, tree, role='', pos=''):
@@ -154,49 +155,20 @@ class SemParserV2(object):
         map(lambda n_elem : n_elem.update({ 'sem':self.change_node_sem_1(n_elem['sem'],n_elem['role'],n_elem['pos'])}) 
                              ,map(itemgetter(1),nary_dict)    )
         
-        head_node = dict(nary_dict).get('Head')
+        node_sem_ary = filter(lambda x : len(x) > 0,  map(itemgetter('sem'), map(itemgetter(1),nary_dict)))
 
-        neg_sign = apply(lambda x: '' if len(x)%2==0 else '-'
-                         ,[filter(lambda x:x[0]=='negation', nary_dict)])
+        
 
-        if head_node["pos"] == "Caa":
-            sem_str = self.gen_sem_coordination(nary_dict,head_node)
-        else:
-            sem_str = self.gen_sem_multinode(nary_dict,neg_sign)
+        template_str = apply(lambda alpha_bet :
+                        r"\ %s r.((%s))"%(" ".join(alpha_bet) , r" & ".join(map(lambda i : "%s(r)"%(i) ,  alpha_bet )))
+                        , [map(lambda i : (chr(i+ord('A'))) , range(len(node_sem_ary)))] )
+        
+        sem_str = reduce(lambda a,b : "%s(%s)"%(a,b) , node_sem_ary , template_str )
         return self.logic_parse(sem_str)
 
 
-    def gen_sem_multinode(self,nary_dict,neg):
-        node_sem_ary = filter(lambda x : len(x) > 0,  map(itemgetter('sem')
-                                               , map(itemgetter(1),filter(lambda x:x[0]!='negation' ,nary_dict))
-                                              ))
-        template_str = apply(lambda alpha_bet :
-                        r"\ %s r.(%s(%s))"%(" ".join(alpha_bet),neg, r" & ".join(map(lambda i : "%s(r)"%(i) ,  alpha_bet )))
-                        , [map(lambda i : (chr(i+ord('A'))) , range(len(node_sem_ary)))] )
-        #print template_str
-        sem_str = reduce(lambda a,b : "%s(%s)"%(a,b) , node_sem_ary , template_str )
-        return sem_str
-
-
-    def gen_sem_coordination(self,nary_dict,head_node):
-        node_sem_ary = filter(lambda x : len(x) > 0,  map(itemgetter('sem')
-                                            , map(itemgetter(1), filter(lambda x:x[0]!='Head' ,nary_dict))
-                                           ))
-        assert len(node_sem_ary)==2
-        ch_word = self.get_ch_word(head_node['sem'])
-        if ch_word in [u'和',u'跟',u'與',u'同',u'暨',u'及',u'又',u'而',u'且' ]:
-            template_str = r"\P Q r.(P(r) & Q(r))(%s)(%s)"
-        elif ch_word in [u'或',u'或者',u'還是',u'或是']:
-            template_str = r"\P Q r.(P(r) | Q(r))(%s)(%s)"
-        else:
-            print "Non support coordination"
-            assert 0
-        sem_str = template_str%(node_sem_ary[0],node_sem_ary[1])
-        return sem_str
-            #TODO  
-
 if __name__ == "__main__" : # or __name__ == "semParser":
-    sp = SemParserV2() 
+    sp = SemParserV1() 
     str_tree = _TEST_DICT[int(argv[1])]
     t1 = run_parser(str_tree)
     print sp.get_parsed_sem(t1).encode('utf-8')

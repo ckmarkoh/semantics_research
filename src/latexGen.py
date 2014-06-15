@@ -1,4 +1,7 @@
 #-*- coding:utf-8 -*-
+import re
+from sys import argv
+from util import gen_ch_id
 class LatexGen(object):
     def __init__(self):
         self.reset_ltree
@@ -50,11 +53,16 @@ class LatexGen(object):
         ch_dict = {}
         while sem_ch != None: 
             ch = sem_ch.group()
-            ch_id = self.gen_ch_id(ch)
+            ch_id = gen_ch_id(ch)
             ch_dict.update( {ch_id: ch} )
             sem = sem.replace(ch,r"\text{%s}"%(ch_id))
             sem_ch = re.search(ur'([\u4e00-\u9fff\uff01-\uff5e]+)',sem)
         for ch_id in ch_dict:
             sem = sem.replace(ch_id,ch_dict[ch_id])
         sem = sem.replace('&',r'\wedge')
+        sem = sem.replace('->',r'\rightarrow')
         return sem
+
+if __name__ == "__main__":
+   ltg = LatexGen()
+   print ltg.sem_to_latex(argv[1].decode('utf-8'))

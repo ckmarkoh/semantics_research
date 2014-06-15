@@ -3,7 +3,7 @@ import nltk.sem.logic as lg
 import operator as opr
 import sys, StringIO
 from ckipParser import CkipParser
-from semParser import SemParserV1
+from semParser import SemParserV2
 from proveMgr import ProveMgr
 from cwnInterface import CwnInterface
 from clsaInterface import ClsaInterface
@@ -41,15 +41,15 @@ class SemMgr(object):
     def __init__(self):  
         self._str_tree_dict = {} 
         self._chvar_dict = {}
-        self._sem_parser = SemParserV1()
+        self._sem_parser = SemParserV2()
         self._ckip_parser = CkipParser()
         self._pm = ProveMgr()
         self._cwn = CwnInterface()
         self._clsa = ClsaInterface()
         self._lgen = LatexGen()
 
-    def gen_ch_id(self, ch_word):
-        return 'A'+"_".join(map(lambda c: hex(ord(c)).upper() , ch_word ))
+    #def gen_ch_id(self, ch_word):
+    #    return 'A'+"_".join(map(lambda c: hex(ord(c)).upper() , ch_word ))
 
     def str_raw_to_str_tree(self,raw_str):
         return self._ckip_parser.str_raw_to_str_tree(raw_str)
@@ -73,6 +73,10 @@ class SemMgr(object):
     def tree_to_latex(self,tree):  
         ltree = self._lgen.tree_to_latex(tree)
         return ltree
+
+    def sem_to_latex(self,sem):  
+        lsem = self._lgen.sem_to_latex(to_unicode(lsem))
+        return lsem 
 
     def tree_to_sem_latex(self,tree):  
         sem = self.tree_to_sem(tree)
@@ -100,7 +104,7 @@ class SemMgr(object):
             sem_str = to_unicode(sem_input) 
             if no_ch:
                 ch_word_list = re.findall(ur'[\u4e00-\u9fff\uff01-\uff5e]+',sem_str)
-                map(lambda  ch_word :  self._chvar_dict.update({ch_word : self.gen_ch_id(ch_word)}) 
+                map(lambda  ch_word :  self._chvar_dict.update({ch_word : gen_ch_id(ch_word)}) 
                                         if ch_word not in self._chvar_dict.keys() else None , ch_word_list )
                 return reduce(lambda x,y : x.replace(y,self._chvar_dict[y]) , ch_word_list , sem_str)
 
@@ -163,7 +167,7 @@ class SemMgr(object):
         return 0.2 < self._clsa.get_lsa(w1,w2)
         
 
-def main():
+def main(sm):
     #str_tree = _TEST_DICT[1]
     #cwn:11,12 
     #clsa:8,9
@@ -171,32 +175,26 @@ def main():
     #s2 = _TEST_DICT[5]
     #t1 =  sm.str_tree_to_sem(s1)
     #t2 =  sm.str_tree_to_sem(s2)
-    #t1 = "A(x1) & B(x2) & C(x3)"
-    #t2 = "A(x1) & B(x2) & C(x3) & D(x4)"
-    #t4 = "x3=x4"
-    #t3 = "all x ( C(x)->D(x))"
-    #t1 = "A(x1) & B(x2) & C(x3) & E(x5) "
-    #t2 = "A(x1) & B(x2) & D(x4)"
-    t1 = "A(x1) & B(x2) & C(x3) & D(x4)"
-    t2 = "A(x1) & B(x2) & C(x3)"
-    #t3 = "C(n3) -> E(n5)"
     print t1.encode('utf-8')
     print t2.encode('utf-8')
-    MyPrinter(sm.prover_prove_select([t2],t1,"resolution"))
-    #MyPrinter(sm.prover_prove_tabu_output([t1],t2).encode('utf-8'))
-    #uns = sm.prover_fix_entail(t1, t2) 
-    #if uns:
-    #    print uns
-    #    print sm.prover_prove([t1,uns],t2)
-    #else:
-    #    print False
+    t3 = "首場(d0) & quantifier(d0,n5) -> 第一場(d4) & quantifier(d4,n3)"
+    t4 = "獲得(e) -> 拿下(e)"
+    t5 = "比賽(n5) & time(n5,e) -> 比賽(n5) & property(n5,n3)"
+    MyPrinter(sm.prover_prove_select([t1,t3,t4,t5],t2,"nine"))
 
-    #print unsolved_rule
-    #t1 = run_parser(str_tree)
-    #s1 = sm.str_tree_to_sem(str_tree)
-    #print s1
-if __name__ == "__main__" :#or __name__ == "semmgr":
-    sm = SemMgr()
+def main2(sm):
     s = _TEST_DICT[20]  
     t = sm.str_tree_to_tree(s)
     sm.tree_to_latex(t)
+
+def case1(sm):
+    t1 = u"巴西隊(n1) & agent(n1,e) &   首場(d0) & quantifier(d0,n5) & 比賽(n5) & time(n5,e)     & 獲得(e) & 勝利(n3) & goal(n3,e)"
+    t2 = u"巴西隊(n1) & agent(n1,e) & 第一場(d4) & quantifier(d4,n3) & 比賽(n5) & property(n5,n3)& 拿下(e) & 勝利(n3) & goal(n3,e)"
+    t3 = u"首場(d0) & quantifier(d0,n5) -> 第一場(d4) & quantifier(d4,n3)"
+    t4 = u"獲得(e) -> 拿下(e)"
+    t5 = u"比賽(n5) & time(n5,e) -> 比賽(n5) & property(n5,n3)"
+    MyPrinter(sm.prover_prove_select([t1,t3,t4,t5],t2,"nine"))
+
+if __name__ == "__main__" :#or __name__ == "semmgr":
+    sm = SemMgr()
+    main(sm)
