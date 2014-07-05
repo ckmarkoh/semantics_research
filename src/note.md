@@ -13,17 +13,30 @@ theorem proving algorithm 6/10
 
 implementation issue ckip, rte 6/17 done
 
-semantic construction more complex case 6/17 
+semantic construction more complex case 6/17 done
 
-issue:redundent word
+implementation issue semantic construction 6/30  done
 
-testcase 6/24
+Prelimilaries, natural language understanding 6/30 done
 
-Prelimilaries, natural language understanding 6/30
+issue:redundent word ?
+
+passive ?
+
+other issue ?
+
+coordination verb ?
+
+testcase 6/28 
 
 conclusion, future work 6/30
 
-implementation issue semantic construction 6/30 done
+draft complete 7/3
+
+code complete 7/8
 
 thesis complete 7/10
+
+improvement semantic construction algorithm,
+ bottom-up node conjunction template?
 

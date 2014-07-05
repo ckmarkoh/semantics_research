@@ -34,6 +34,8 @@ _TEST_DICT = {
 15202:"S(theme:Nba(DUMMY1:Nba:張藝謀|Head:Caa:與|DUMMY2:Nb:鞏俐)|time:Dd:曾|Head:VH11:相戀)",
 20:u"S(agent:NP(Head:Nb:海生館)|Head:VE2:研究|goal:S(agent:NP(apposition:Nab:人員|Head:Nb:謝泓諺)|Head:VE2:發現|goal:S(theme:NP(property:Na:水螅體|Head:Nad:數量)|Head:VH16: 增加)))",
 21:u"S(agent:NP(apposition:NP(property:Nb:海生館|property:Nv:研究|Head:Nab:人員)|Head:Nb:謝泓諺)|Head:VE2:發現|goal:S(theme:NP(property:Na:>水螅體|Head:Nad:數量)|Head:VH16:增加))",
+22:u"S(agent:NP(Head:Nba:馬英九)|location:PP(Head:P21:在|DUMMY:NP(Head:Nca:中研院))|Head:VC31:發表|theme:NP(Head:Nad:演講))",
+23:u"S(agent:NP(Head:Nba:馬英九)|location:PP(Head:P21:在|DUMMY:NP(Head:Nca:研究院))|Head:VC31:公開|theme:NP(Head:Nad:演說))",
 }
 
 
@@ -167,22 +169,8 @@ class SemMgr(object):
         return 0.2 < self._clsa.get_lsa(w1,w2)
         
 
-def main(sm):
-    #str_tree = _TEST_DICT[1]
-    #cwn:11,12 
-    #clsa:8,9
-    #s1 = _TEST_DICT[4]
-    #s2 = _TEST_DICT[5]
-    #t1 =  sm.str_tree_to_sem(s1)
-    #t2 =  sm.str_tree_to_sem(s2)
-    print t1.encode('utf-8')
-    print t2.encode('utf-8')
-    t3 = "首場(d0) & quantifier(d0,n5) -> 第一場(d4) & quantifier(d4,n3)"
-    t4 = "獲得(e) -> 拿下(e)"
-    t5 = "比賽(n5) & time(n5,e) -> 比賽(n5) & property(n5,n3)"
-    MyPrinter(sm.prover_prove_select([t1,t3,t4,t5],t2,"nine"))
 
-def main2(sm):
+def main(sm):
     s = _TEST_DICT[20]  
     t = sm.str_tree_to_tree(s)
     sm.tree_to_latex(t)
@@ -195,6 +183,25 @@ def case1(sm):
     t5 = u"比賽(n5) & time(n5,e) -> 比賽(n5) & property(n5,n3)"
     MyPrinter(sm.prover_prove_select([t1,t3,t4,t5],t2,"nine"))
 
+def case2(sm):
+#    t1 = u"exists x. (A(x) &C(x) -> B(x) )"
+#    t2 = u"exists x. (A(x) -> B(x))"
+    t1 = u"A(x) & B(x2)"
+    t2 = u"-(A(x) & -C(x3))"
+    t3 = u"(B(x2)) -> -C(x3)"
+    MyPrinter(sm.prover_prove_select([t1,t3],t2,"tableau"))
+
+def case3(sm):
+    #cwn:11,12 
+    #clsa:8,9
+    s1 = _TEST_DICT[22]
+    s2 = _TEST_DICT[23]
+    t1 =  sm.str_tree_to_sem(s1)
+    t2 =  sm.str_tree_to_sem(s2)
+    print t1.encode('utf-8')
+    print t2.encode('utf-8')
+    sm.prover_catch_unsolved([t1],t2)
+
 if __name__ == "__main__" :#or __name__ == "semmgr":
     sm = SemMgr()
-    main(sm)
+    case3(sm)

@@ -65,7 +65,8 @@ def p_st_2(p):
 
 def p_pars_stg(p):
     'pars : LPAREN stGropu RPAREN'
-    p[0]= "(Node %s )"%(p[2])
+    #p[0]= "(Node %s )"%(p[2])
+    p[0]= p[2]
 
 def p_stg_st(p):
     'stGropu : st'

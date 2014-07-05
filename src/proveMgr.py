@@ -6,6 +6,7 @@ from util import *
 import nltk.sem.logic as lgc
 import operator as opr
 import logging
+from myPrinter import MyPrinter
 #logging.basicConfig(level=logging.DEBUG)
 
 
@@ -48,16 +49,95 @@ class ProveMgr(object):
         (result, pre, con), output = apply(  capture_output(self.prove_prover), [ pre_str, con_str, prover] )
         return (result,pre,con,output)
 
+
     def prove_catch_unsolved(self,pre_str,con_str):
+        print "!!!"
+        pre, con = self.parse_logic(pre_str,con_str)
+        con_split = self.logic_split_and(con)
+        pre_split = self.logic_split_and(pre[0])
+        word_pre = self.logic_and_getword(pre_split)
+        word_con = self.logic_and_getword(con_split)
+        knowledge_ary = []
+        for w in word_pre:
+            if w not in word_con: 
+                w_arg_form = self.logic_word_form(pre_split, w)
+                w_arg = w_arg_form.args[0]
+                w_roles = self.logic_get_role(pre_split, w_arg, 'variables')  
+                print w_arg
+                if len(w_roles) > 0 and w_arg.__str__() !='e': 
+                    assert len(w_roles) == 1
+                    w_role_pred = w_roles[0].pred
+                    w_con_roles= self.logic_get_role(con_split, w_role_pred, 'predicates')  
+                    if len(w_con_roles) > 0:
+                        assert len(w_con_roles) == 1
+                        w_con_args= set(w_con_roles[0].args).difference(set(w_roles[0].args))
+                        assert len(w_con_args) == 1
+                        w_con_arg = w_con_args.pop()
+                        w_con_form =  self.logic_arg_form(con_split, w_con_arg)
+                        w_con_word = w_con_form.pred
+                        lgf = "%s & %s -> %s & %s"%(w_arg_form, w_roles[0], w_con_form, w_con_roles[0])
+                        print lgf
+                        knowledge_ary.append({'w1':w,'w2':w_con_word,'lgf':lgf})
+                else:
+                    w_con_form = self.logic_arg_form(con_split,w_arg) 
+                    w_con_word = w_con_form.pred
+                    lgf = "%s -> %s"%(w_arg_form, w_con_form)
+                    knowledge_ary.append({'w1':w,'w2':w_con_word,'lgf':lgf})
+        MyPrinter( knowledge_ary)
+        assert 0
+
+    def logic_word_form(self, lgf_ary, w):
+        return filter(lambda x: x.pred.__str__()==w, lgf_ary )[0]#.args[0]
+
+    def logic_arg_form(self, lgf_ary, arg):
+        return filter(lambda x: arg in x.args and len(x.args) == 1, lgf_ary )[0]#.pred
+       
+    def logic_get_role(self, lgf_ary, input_str, ftype):
+        if ftype == 'variables':
+            return filter(lambda x: input_str in x.args and len(x.args)>1, lgf_ary)
+        elif ftype == 'predicates':
+            return filter(lambda x: input_str == x.pred and len(x.args)>1, lgf_ary)
+        else:
+            assert 0
+
+    def logic_and_getword(self, lgf_ary):
+        return [x.pred.__str__() for x in  filter(lambda x: x.pred.__str__().find('A0X')!=-1, lgf_ary)]
+
+    def logic_split_and(self, lgf): 
+        if isinstance(lgf, lgc.AndExpression):
+            lgf_0 , lgf_1 = lgf.first, lgf.second#lgf.visit(lambda x:x, lambda x:x)
+            return [lgf_1] + self.logic_split_and(lgf_0)
+        else:
+            return [lgf]
+
+
+
+
+
+
+    def logic_drop_var(self, lgf): 
+        if isinstance(lgf, lgc.ApplicationExpression):
+            lgf_0 , lgf_1 = lgf.visit(lambda x:x, lambda x:x)
+            return lgf_0,lgf_1
+        else:
+            assert 0 
+
+    def logic_same_variable(self, lgf_ary, lgf, ftype, inv=False):
+        assert ftype == 'variables' or ftype == 'predicates'
+        if not inv:
+            return filter(lambda f : opr.attrgetter(ftype)(lgf)() \
+                                     .issubset(opr.attrgetter(ftype)(f)()) ,lgf_ary)
+        else:
+            return filter(lambda f : not opr.attrgetter(ftype)(lgf)() \
+                                     .issubset(opr.attrgetter(ftype)(f)()) ,lgf_ary)
+
+    def prove_catch_unsolved_2(self,pre_str,con_str):
         (result, pre, con), output = apply(  capture_output(self.prove_prover), [ pre_str, con_str, "tableau"] )
         unsolved = apply(lambda opt_line : 
                             opr.itemgetter(filter(lambda i: opt_line[i] == 'AGENDA EMPTY' 
                                                 ,range(1,len(opt_line)))[0]-1)(opt_line)
                                                     , [ map(lambda s : s.strip() ,  output.split('\n'))] )
         pre0 = pre[0]
-        #print unsolved
-        #print result
-        #pre0 = lgc.LogicParser().parse('( agent(n0,e) & A0X99AC_0X82F1_0X4E5D(n0) & A0X4E2D_0X7814_0X9662(d1) & location(d1,e) & A0X767C_0X8868(e) & A0X6F14_0X8B1B(n2))')
         con_split = self.logic_split_and(con)
         pre0_split = self.logic_split_and(pre0)
         unsolved_lgf = lgc.LogicParser().parse(unsolved)
@@ -83,32 +163,3 @@ class ProveMgr(object):
         return (con_unsolved.predicates().pop().__str__()  
               , pre0_unsolved.predicates().pop().__str__()
               , missing_rule.__str__())
-
-
-        
-
-    def logic_same_variable(self, lgf_ary, lgf, ftype, inv=False):
-        assert ftype == 'variables' or ftype == 'predicates'
-        if not inv:
-            return filter(lambda f : opr.attrgetter(ftype)(lgf)() \
-                                     .issubset(opr.attrgetter(ftype)(f)()) ,lgf_ary)
-        else:
-            return filter(lambda f : not opr.attrgetter(ftype)(lgf)() \
-                                     .issubset(opr.attrgetter(ftype)(f)()) ,lgf_ary)
-
-            
-
-    
-    def logic_split_and(self, lgf): 
-        if isinstance(lgf, lgc.AndExpression):
-            lgf_0 , lgf_1 = lgf.first, lgf.second#lgf.visit(lambda x:x, lambda x:x)
-            return [lgf_1] + self.logic_split_and(lgf_0)
-        else:
-            return [lgf]
-
-    def logic_drop_var(self, lgf): 
-        if isinstance(lgf, lgc.ApplicationExpression):
-            lgf_0 , lgf_1 = lgf.visit(lambda x:x, lambda x:x)
-            return lgf_0,lgf_1
-        else:
-            assert 0 
