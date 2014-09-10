@@ -110,6 +110,10 @@ _INPUT_DICT = {
 82:"S(apposition:NP(property:Nca:大陸|property:Nba:海爾|property:Nab:集團|Head:Nab:總經理)|Head:Nb:張瑞敏)",
 83:"S(apposition:NP(property:N‧的(head:Nca:巴基斯坦|Head:DE:的)|Head:Nab:宿敵)|Head:Nca:印度)",
 84:"S(apposition:NP(property:N‧的(head:Nca:巴基斯坦|Head:DE:的)|Head:Nab:好朋友)|Head:Nca:印度)",
+85:"S(experiencer:NP(Head:Nab:研究員)|Head:VJ2:謝|goal:NP(property:Nab:先生|property:Nv:研究|Head:Nab:水螅))",
+86:"S(agent:NP(property:NP(apposition:Nab:研究員|Head:Nbc:謝)|Head:Nab:先生)|Head:VC31:研究|theme:NP(Head:Nab:水螅))",
+87:"S(agent:NP(property:Ndaba:今年|Head:Na:世足賽)|theme:PP(Head:P21:在|DUMMY:NP(property:Nba:聖保羅|Head:Ncb:競技場))|Head:VL2:開響)",
+88:"S(agent:NP(property:Ndaba:今年|property:Nac:世足賽|property:DM:第一場|Head:Nac:比賽)|location:PP(Head:P21:在|DUMMY:NP(property:Nba:聖保羅|Head:Ncb:競技場))|Head:VC31:舉行)",
 }
 
 

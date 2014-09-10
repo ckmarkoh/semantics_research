@@ -184,12 +184,10 @@ def case1(sm):
     MyPrinter(sm.prover_prove_select([t1,t3,t4,t5],t2,"nine"))
 
 def case2(sm):
-#    t1 = u"exists x. (A(x) &C(x) -> B(x) )"
-#    t2 = u"exists x. (A(x) -> B(x))"
-    t1 = u"A(x) & B(x2)"
-    t2 = u"-(A(x) & -C(x3))"
-    t3 = u"(B(x2)) -> -C(x3)"
-    MyPrinter(sm.prover_prove_select([t1,t3],t2,"tableau"))
+    t1=" theme(n1,e) & AA(n1) & BB(e) & theme(n2,e) & CC(n2)"
+    t2=" theme(n1,e) & AA(n1) & BB(e) & theme(n3,e) & DD(n3)"
+    t3=" theme(n2,e) & CC(n2) ->        theme(n3,e) & DD(n3) "
+    MyPrinter(sm.prover_prove_select([t1],t2,"tableau"))
 
 def case3(sm):
     #cwn:11,12 
@@ -204,4 +202,4 @@ def case3(sm):
 
 if __name__ == "__main__" :#or __name__ == "semmgr":
     sm = SemMgr()
-    case3(sm)
+    case2(sm)

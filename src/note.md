@@ -27,16 +27,16 @@ other issue ?
 
 coordination verb ?
 
-testcase 6/28 
+testcase 6/28 done
 
-conclusion, future work 6/30
+conclusion, future work 6/30 done
 
-draft complete 7/3
+draft complete 7/3 done
 
-code complete 7/8
-
-thesis complete 7/10
+thesis complete 7/10 done
 
 improvement semantic construction algorithm,
  bottom-up node conjunction template?
+
+code complete 7/15
 
